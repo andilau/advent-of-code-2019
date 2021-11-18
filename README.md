@@ -1,8 +1,7 @@
-# Advent of Code Starter
+# Advent of Code 2019
 
-Starter template for solving [Advent of Code](https://adventofcode.com/) in [Kotlin](https://kotlinlang.org/). 
-Advent of Code is an Advent calendar of small programming puzzles by [Eric Wastl](http://was.tl/). 
-Based on [aoc-kotlin-starter](https://github.com/hughjdavey/aoc-kotlin-starter) template by [Hugh Davey](https://github.com/hughjdavey).
+This project contains my solutions for the [Advent of Code 2019](https://adventofcode.com/2019) in [Kotlin](https://kotlinlang.org/). 
+Advent of Code is an Advent calendar of small programming puzzles by [Eric Wastl](http://was.tl/).
 
 ### Features
 
