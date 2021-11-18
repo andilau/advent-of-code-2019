@@ -1,39 +1,47 @@
 package days
 
+import days.Day1.Companion.requiredFuel
+import days.Day1.Companion.requiredFuelTotal
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 
 @DisplayName("Day 1")
 class Day1Test {
-    val ints = listOf(1, 2, 3)
-
     @Nested
     @DisplayName("Part 1")
     inner class Part1 {
-        @Test
-        fun shouldReturnSumOfEmptyList() {
-            assertThat(Day1(emptyList()).partOne()).isEqualTo(0)
-        }
 
-        @Test
-        fun shouldReturnSumOfSimpleList() {
-            assertThat(Day1(ints).partOne()).isEqualTo(6)
+        @TestFactory
+        fun testFuelRequiredForMass() = listOf(
+            12 to 2,
+            14 to 2,
+            1969 to 654,
+            100756 to 33583
+        ).map { (mass, fuel) ->
+            DynamicTest.dynamicTest("Fuel required for $mass should be $fuel") {
+                assertThat(mass.requiredFuel()).isEqualTo(fuel)
+            }
         }
     }
 
     @Nested
     @DisplayName("Part 2")
     inner class Part2 {
-        @Test
-        fun shouldReturnProductOfEmptyList() {
-            assertThat(Day1(emptyList()).partTwo()).isEqualTo(1)
-        }
+        private val massToFuel = listOf(
+            12 to 2,
+            14 to 2,
+            1969 to 966,
+            100756 to 50346
+        )
 
-        @Test
-        fun shouldReturnProductOfSimpleList() {
-            assertThat(Day1(ints).partTwo()).isEqualTo(6)
+        @TestFactory
+        @DisplayName("Fuel Fuel Rec")
+        fun testFuelRequiredForMassAndFuel(): List<DynamicTest> {
+            return massToFuel.map { (mass, fuel) ->
+                DynamicTest.dynamicTest("Fuel required for $mass should be $fuel") {
+                    assertThat(mass.requiredFuelTotal()).isEqualTo(fuel)
+                }
+            }
         }
     }
 }

@@ -1,12 +1,22 @@
 package days
 
 @AdventOfCodePuzzle(
-    name = "Puzzle Name",
-    url = "https://adventofcode.com/2000/day/1",
-    date = Date(day = 1, year = 2000)
+    name = "The Tyranny of the Rocket Equation",
+    url = "https://adventofcode.com/2019/day/1",
+    date = Date(day = 1, year = 2019)
 )
-class Day1(private val input: List<Int>) : Puzzle {
-    override fun partOne() = input.sum()
+class Day1(private val masses: List<Int>) : Puzzle {
+    override fun partOne() = masses.sumOf { it.requiredFuel() }
 
-    override fun partTwo() = input.foldRight(1) { element, acc -> element * acc }
+    override fun partTwo() = masses.sumOf { it.requiredFuelTotal() }
+
+    companion object {
+        fun Int.requiredFuel() = this / 3 - 2
+
+        fun Int.requiredFuelTotal(): Int {
+            if (this <= 8) return 0
+            val fuel = this.requiredFuel()
+            return fuel + fuel.requiredFuelTotal()
+        }
+    }
 }
