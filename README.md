@@ -6,6 +6,7 @@ Advent of Code is an Advent calendar of small programming puzzles by [Eric Wastl
 ### Solutions
 
 - Day 1: [The Tyranny of the Rocket Equation](https://adventofcode.com/2019/day/1), [Day1.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day1.kt)
+- Day 2: [1202 Program Alarm](https://adventofcode.com/2019/day/2), [Day2.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day2.kt)
 
 ### Features
 
