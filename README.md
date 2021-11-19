@@ -1,11 +1,11 @@
 # Advent of Code 2019
 
-This project contains my solutions for the [Advent of Code 2019](https://adventofcode.com/2019) in [Kotlin](https://kotlinlang.org/). 
+This project contains solutions to the [Advent of Code 2019](https://adventofcode.com/2019) challenge in [Kotlin](https://kotlinlang.org/). 
 Advent of Code is an Advent calendar of small programming puzzles by [Eric Wastl](http://was.tl/).
 
 ### Solutions
 
-- Day 1: [The Tyranny of the Rocket Equation](https://adventofcode.com/2019/day/1) [🙌](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day1.kt)
+- Day 1: [The Tyranny of the Rocket Equation](https://adventofcode.com/2019/day/1), [Day1.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day1.kt)
 
 ### Features
 
