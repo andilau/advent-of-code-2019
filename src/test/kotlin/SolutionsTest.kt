@@ -15,6 +15,7 @@ class SolutionsTest {
         Day3(InputReader.getInputAsList(3)) to Pair(1626, 27330),
         Day4(InputReader.getInputAsString(4)) to Pair(945, 617),
         Day4Faster(InputReader.getInputAsString(4)) to Pair(945, 617),
+        Day5(InputReader.getInputAsString(5)) to Pair(9_938_601, 4_283_952),
     )
         .map { (day, answers) ->
             DynamicTest.dynamicTest("${day.javaClass.simpleName} -> ${answers.first} / ${answers.second}") {
