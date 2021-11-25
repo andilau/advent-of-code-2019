@@ -10,6 +10,7 @@ Advent of Code is an Advent calendar of small programming puzzles by [Eric Wastl
 - Day 3: [Crossed Wires](https://adventofcode.com/2019/day/3), [Day3.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day3.kt)
 - Day 4: [Secure Container](https://adventofcode.com/2019/day/4), [Day4.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day4.kt), [Day4Faster.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day4Faster.kt)
 - Day 5: [Sunny with a Chance of Asteroids](https://adventofcode.com/2019/day/5), [Day5.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day5.kt)
+- Day 6: [Universal Orbit Map](https://adventofcode.com/2019/day/6), [Day6.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day6.kt)
 
 ### Features
 
