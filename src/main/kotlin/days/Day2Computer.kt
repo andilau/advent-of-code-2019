@@ -5,11 +5,9 @@ package days
     url = "https://adventofcode.com/2019/day/2",
     date = Date(day = 2, year = 2019)
 )
-class Day2Computer(line: String) : Puzzle {
-    private val instructions = line.split(",").map(String::toInt).toIntArray()
-
+class Day2Computer(private var program: IntArray) : Puzzle {
     override fun partOne() =
-        IntCodeComputer(instructions)
+        IntCodeComputer(program)
             .apply { withNounAndVerb(12, 2) }
             .run()
             .memory
@@ -18,7 +16,7 @@ class Day2Computer(line: String) : Puzzle {
     override fun partTwo() =
         pairsFrom(0..99, 0..99)
             .first { (noun, verb) ->
-                IntCodeComputer(instructions)
+                IntCodeComputer(program)
                     .apply { withNounAndVerb(noun, verb) }
                     .run()
                     .memory

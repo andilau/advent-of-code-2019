@@ -5,22 +5,20 @@ package days
     url = "https://adventofcode.com/2019/day/2",
     date = Date(day = 2, year = 2019)
 )
-class Day2(line: String) : Puzzle {
-    private val instructions = line.split(",").map(String::toInt).toIntArray()
-
+class Day2(private var program: IntArray) : Puzzle {
     override fun partOne() =
-        instructions.clone().run(12, 2).first()
+        program.clone().run(12, 2).first()
 
     override fun partTwo() =
         pairsFrom(0..99, 0..99)
             .first { (noun, verb) ->
-                instructions.clone().run(noun, verb).first() == 19690720
+                program.clone().run(noun, verb).first() == 19690720
             }
             .let { (noun, verb) ->
                 100 * noun + verb
             }
 
-    fun testProgram() = instructions.run()
+    fun testProgram() = program.run()
 
     private fun add(a: Int, b: Int) = a + b
     private fun multiply(a: Int, b: Int) = a * b

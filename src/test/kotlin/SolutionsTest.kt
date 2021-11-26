@@ -11,12 +11,12 @@ class SolutionsTest {
     @TestFactory()
     fun testAdventOfCode() = listOf(
         Day1(InputReader.getInputAsListOfInt(1)) to Pair(3_380_731, 5_068_210),
-        Day2(InputReader.getInputAsString(2)) to Pair(6_627_023, 4019),
-        Day2Computer(InputReader.getInputAsString(2)) to Pair(6_627_023, 4019),
+        Day2(InputReader.getInputAsIntArray(2)) to Pair(6_627_023, 4019),
+        Day2Computer(InputReader.getInputAsIntArray(2)) to Pair(6_627_023, 4019),
         Day3(InputReader.getInputAsList(3)) to Pair(1626, 27330),
         Day4(InputReader.getInputAsString(4)) to Pair(945, 617),
         Day4Faster(InputReader.getInputAsString(4)) to Pair(945, 617),
-        Day5(InputReader.getInputAsString(5)) to Pair(9_938_601, 4_283_952),
+        Day5(InputReader.getInputAsIntArray(5)) to Pair(9_938_601, 4_283_952),
         Day6(InputReader.getInputAsList(6)) to Pair(247_089, 442),
     )
         .map { (day, answers) ->

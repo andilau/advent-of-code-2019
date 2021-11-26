@@ -12,6 +12,10 @@ object InputReader {
 
     fun getInputAsListOfLong(day: Int): List<Long> = File(fromResources(day)).readLines().map(String::toLong)
 
+    fun getInputAsIntArray(day: Int): IntArray = getInputAsString(day).toIntArray()
+
+    fun String.toIntArray(): IntArray = split(",", "\n").map(String::toInt).toIntArray()
+
     private fun fromResources(day: Int): URI =
         javaClass.classLoader.getResource("input_day_$day.txt")?.toURI()
             ?: throw IllegalArgumentException("input file for day $day not found")

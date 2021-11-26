@@ -40,6 +40,14 @@ class InputReaderTest {
             .containsExactly(1721L, 979L, 366L, 299L, 675L, 1456L)
     }
 
+    @Test
+    fun testReadInputAsIntArray() {
+        val inputAsIntArray = InputReader.getInputAsIntArray(0)
+        assertThat(inputAsIntArray)
+            .isNotEmpty
+            .hasSize(6)
+            .containsExactly(1721, 979, 366, 299, 675, 1456)
+    }
 
     @Test
     fun testFailMissingFile() {

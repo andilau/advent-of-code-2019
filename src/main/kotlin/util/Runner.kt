@@ -32,27 +32,26 @@ object Runner {
 
     private fun printDay(puzzleClass: Class<out Puzzle>) {
         val dayNumber: Int = dayNumber(puzzleClass.simpleName)
-        println("\n=== DAY $dayNumber (${puzzleClass.simpleName}) ===")
+        println("\n--- Day $dayNumber: (${puzzleClass.simpleName}) ---")
 
-        var puzzle: Puzzle? = null
+        var puzzle: Puzzle?
         try {
             puzzle = puzzleClass.constructors[0].newInstance() as Puzzle
         } catch (e: IllegalArgumentException) {
-            when (puzzleClass.constructors[0].genericParameterTypes[0].typeName) {
-                "java.lang.String" -> {
-                    puzzle = puzzleClass.constructors[0].newInstance(InputReader.getInputAsString(dayNumber)) as Puzzle
-                }
-                "java.util.List<java.lang.String>" -> {
-                    puzzle = puzzleClass.constructors[0].newInstance(InputReader.getInputAsList(dayNumber)) as Puzzle
-                }
-                "java.util.List<java.lang.Integer>" -> {
-                    puzzle =
-                        puzzleClass.constructors[0].newInstance(InputReader.getInputAsListOfInt(dayNumber)) as Puzzle
-                }
-                "java.util.List<java.lang.Long>" -> {
-                    puzzle =
-                        puzzleClass.constructors[0].newInstance(InputReader.getInputAsListOfLong(dayNumber)) as Puzzle
-                }
+            val requiredTypeName = puzzleClass.constructors[0].genericParameterTypes[0].typeName
+            puzzle = when (requiredTypeName) {
+                "java.lang.String" ->
+                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsString(dayNumber)) as Puzzle
+                "java.util.List<java.lang.String>" ->
+                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsList(dayNumber)) as Puzzle
+                "java.util.List<java.lang.Integer>" ->
+                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsListOfInt(dayNumber)) as Puzzle
+                "java.util.List<java.lang.Long>" ->
+                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsListOfLong(dayNumber)) as Puzzle
+                "int[]" ->
+                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsIntArray(dayNumber)) as Puzzle
+                else ->
+                    throw IllegalStateException("Unhandled Input: $requiredTypeName")
             }
         }
         if (puzzle is Puzzle) {

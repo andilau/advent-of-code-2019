@@ -9,8 +9,8 @@ import org.junit.jupiter.api.TestFactory
 @DisplayName("Day 5")
 class Day5Test {
     @Nested
-    @DisplayName("Part 1")
-    inner class Part1 {
+    @DisplayName("Computer")
+    inner class Computer {
         @TestFactory
         fun testSmallPrograms() = listOf(
             "1,0,0,0,99" to "2,0,0,0,99",
