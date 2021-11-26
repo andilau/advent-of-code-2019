@@ -1,14 +1,21 @@
 package days
 
+import days.IntCodeComputer.Instruction.*
 import days.IntCodeComputer.ParameterMode.Companion.mapIntToMode
 import days.IntCodeComputer.ParameterMode.IMMEDIATE
 import days.IntCodeComputer.ParameterMode.POSITION
 
 class IntCodeComputer(program: IntArray) {
-    private val io = InputOutput(0, mutableListOf())
+    private val io = InputOutput(mutableListOf(), mutableListOf())
+    private var ip = 0
     internal var memory = program.clone()
 
-    var input by io::input
+    var input: Int
+        set(input) {
+            io.input.add(input)
+        }
+        get() = io.input.last()
+
     val output: List<Int>
         get() = io.output.toList()
 
@@ -19,20 +26,37 @@ class IntCodeComputer(program: IntArray) {
         }
         else throw IllegalArgumentException("cannot apply noun & verb, memory size: ${memory.size}")
 
-    fun run(): IntCodeComputer {
-        var ip = 0
+    fun halted() = Instruction.from(memory[ip].opcode()) is Halt
+
+    fun run(blocking: Boolean = false): IntCodeComputer {
         do {
             val instruction = Instruction.from(memory[ip].opcode())
-            ip += instruction.execute(memory, ip, io)
 
-        } while (instruction !is Instruction.Halt)
+            if (instruction is Input && io.input.isEmpty()) break
+            ip += instruction.execute(memory, ip, io)
+            if (blocking && instruction is Output) break
+        } while (instruction !is Halt)
         return this
     }
 
+    fun runBlocking() = run(blocking = true)
+
     sealed class Instruction(val offset: Int) {
-        fun IntArray.getValue(at: Int, mode: ParameterMode) = when (mode) {
-            POSITION -> this[this[at]]
-            IMMEDIATE -> this[at]
+        companion object {
+            fun from(opcode: Int): Instruction {
+                return when (opcode) {
+                    1 -> Add
+                    2 -> Multiply
+                    3 -> Input
+                    4 -> Output
+                    5 -> JumpTrue
+                    6 -> JumpFalse
+                    7 -> LessThan
+                    8 -> Equals
+                    99 -> Halt
+                    else -> throw IllegalArgumentException("Unknown operation: $opcode")
+                }
+            }
         }
 
         abstract fun execute(program: IntArray, ip: Int, io: InputOutput): Int
@@ -62,7 +86,7 @@ class IntCodeComputer(program: IntArray) {
         // saves it to the position given by its only parameter.
         object Input : Instruction(2) {
             override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
-                program[program[ip + 1]] = io.input
+                program[program[ip + 1]] = io.input.removeFirst()
                 return offset
             }
         }
@@ -131,21 +155,9 @@ class IntCodeComputer(program: IntArray) {
             }
         }
 
-        companion object {
-            fun from(opcode: Int): Instruction {
-                return when (opcode) {
-                    1 -> Add
-                    2 -> Multiply
-                    3 -> Input
-                    4 -> Output
-                    5 -> JumpTrue
-                    6 -> JumpFalse
-                    7 -> LessThan
-                    8 -> Equals
-                    99 -> Halt
-                    else -> throw IllegalArgumentException("Unknown operation: $opcode")
-                }
-            }
+        fun IntArray.getValue(at: Int, mode: ParameterMode) = when (mode) {
+            POSITION -> this[this[at]]
+            IMMEDIATE -> this[at]
         }
     }
 
@@ -165,7 +177,7 @@ class IntCodeComputer(program: IntArray) {
         }
     }
 
-    data class InputOutput(var input: Int, val output: MutableList<Int>)
+    data class InputOutput(var input: MutableList<Int>, val output: MutableList<Int>)
 
     val memoryAsString
         get() = memory.joinToString(",")
