@@ -39,17 +39,18 @@ object Runner {
             puzzle = puzzleClass.constructors[0].newInstance() as Puzzle
         } catch (e: IllegalArgumentException) {
             val requiredTypeName = puzzleClass.constructors[0].genericParameterTypes[0].typeName
+            val constructorWithParameter = puzzleClass.constructors.first { it.parameterCount == 1 } ?: return
             puzzle = when (requiredTypeName) {
                 "java.lang.String" ->
-                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsString(dayNumber)) as Puzzle
+                    constructorWithParameter.newInstance(InputReader.getInputAsString(dayNumber)) as Puzzle
                 "java.util.List<java.lang.String>" ->
-                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsList(dayNumber)) as Puzzle
+                    constructorWithParameter.newInstance(InputReader.getInputAsList(dayNumber)) as Puzzle
                 "java.util.List<java.lang.Integer>" ->
-                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsListOfInt(dayNumber)) as Puzzle
+                    constructorWithParameter.newInstance(InputReader.getInputAsListOfInt(dayNumber)) as Puzzle
                 "java.util.List<java.lang.Long>" ->
-                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsListOfLong(dayNumber)) as Puzzle
+                    constructorWithParameter.newInstance(InputReader.getInputAsListOfLong(dayNumber)) as Puzzle
                 "int[]" ->
-                    puzzleClass.constructors[0].newInstance(InputReader.getInputAsIntArray(dayNumber)) as Puzzle
+                    constructorWithParameter.newInstance(InputReader.getInputAsIntArray(dayNumber)) as Puzzle
                 else ->
                     throw IllegalStateException("Unhandled Input: $requiredTypeName")
             }
