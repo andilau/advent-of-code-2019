@@ -5,30 +5,33 @@ package days
     url = "https://adventofcode.com/2019/day/8",
     date = Date(day = 8, year = 2019)
 )
-class Day8(private val input: String) : Puzzle {
+class Day8(input: String) : Puzzle {
     private val layers = input.chunked(WIDE * TALL)
 
     override fun partOne() =
         layers
-            .minByOrNull { layer -> layer.count { it == '0' } }
-            ?.let { layer -> layer.count { it == '1' } * layer.count { it == '2' } }
+            .minByOrNull { layer -> layer.count { it == BLACK } }
+            ?.let { layer -> layer.count { it == WHITE } * layer.count { it == TRANSPARENT } }
             ?: 0
 
     override fun partTwo() =
-        (0 until WIDE * TALL)
+        layers.first().indices
             .map { at ->
-                if (layers
+                layers
                     .map { it[at] }
-                    .firstOrNull { it != '2' } == '1') '@' else ' '
+                    .firstOrNull { it != TRANSPARENT }
             }
             .chunked(WIDE)
             .forEach {
                 println(it.joinToString(""))
             }
 
-    companion object {
-        const val WIDE = 25
-        const val TALL = 6
+     companion object {
+        var WIDE = 25
+        var TALL = 6
+        const val BLACK = '0'
+        const val WHITE = '1'
+        const val TRANSPARENT = '2'
     }
 
 }
