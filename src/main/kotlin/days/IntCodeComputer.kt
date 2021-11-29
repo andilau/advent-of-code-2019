@@ -1,13 +1,13 @@
 package days
 
 import days.IntCodeComputer.Instruction.*
+import days.IntCodeComputer.ParameterMode.*
 import days.IntCodeComputer.ParameterMode.Companion.mapIntToMode
-import days.IntCodeComputer.ParameterMode.IMMEDIATE
-import days.IntCodeComputer.ParameterMode.POSITION
 
 class IntCodeComputer(program: IntArray) {
     private val io = InputOutput(mutableListOf(), mutableListOf())
     private var ip = 0
+    private var base = 0
     internal var memory = program.clone()
 
     var input: Int
@@ -33,7 +33,7 @@ class IntCodeComputer(program: IntArray) {
             val instruction = Instruction.from(memory[ip].opcode())
 
             if (instruction is Input && io.input.isEmpty()) break
-            ip += instruction.execute(memory, ip, io)
+            ip += instruction.execute(memory, ip, base, io)
             if (blocking && instruction is Output) break
         } while (instruction !is Halt)
         return this
@@ -53,31 +53,32 @@ class IntCodeComputer(program: IntArray) {
                     6 -> JumpFalse
                     7 -> LessThan
                     8 -> Equals
+                    9 -> SetBase
                     99 -> Halt
                     else -> throw IllegalArgumentException("Unknown operation: $opcode")
                 }
             }
         }
 
-        abstract fun execute(program: IntArray, ip: Int, io: InputOutput): Int
+        abstract fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int
 
         // Opcode 1 adds together numbers read from two positions and stores the result in a third position.
         // The three integers immediately after the opcode tell you these three positions
         object Add : Instruction(4) {
-            override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
                 program[program[ip + 3]] =
-                    program.getValue(ip + 1, program[ip].parameter1Mode()) +
-                            program.getValue(ip + 2, program[ip].parameter2Mode())
+                    program.getValue(ip + 1, program[ip].parameter1Mode(), base) +
+                            program.getValue(ip + 2, program[ip].parameter2Mode(), base)
                 return offset
             }
         }
 
         // Opcode 2 works exactly like opcode 1, except it multiplies the two inputs instead of adding them.
         object Multiply : Instruction(4) {
-            override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
                 program[program[ip + 3]] =
-                    program.getValue(ip + 1, program[ip].parameter1Mode()) *
-                            program.getValue(ip + 2, program[ip].parameter2Mode())
+                    program.getValue(ip + 1, program[ip].parameter1Mode(), base) *
+                            program.getValue(ip + 2, program[ip].parameter2Mode(), base)
                 return offset
             }
         }
@@ -85,7 +86,7 @@ class IntCodeComputer(program: IntArray) {
         // Opcode 3 is input: it takes a single integer as input and
         // saves it to the position given by its only parameter.
         object Input : Instruction(2) {
-            override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
                 program[program[ip + 1]] = io.input.removeFirst()
                 return offset
             }
@@ -93,8 +94,8 @@ class IntCodeComputer(program: IntArray) {
 
         // Opcode 4 is output: it outputs the value of its only parameter.
         object Output : Instruction(2) {
-            override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
-                val value = program.getValue(ip + 1, program[ip].parameter1Mode())
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
+                val value = program.getValue(ip + 1, program[ip].parameter1Mode(), base)
                 io.output.add(value)
                 return offset
             }
@@ -104,9 +105,9 @@ class IntCodeComputer(program: IntArray) {
         // it sets the instruction pointer to the value from the second parameter.
         // Otherwise, it does nothing.
         object JumpTrue : IntCodeComputer.Instruction(3) {
-            override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
-                val p1 = program.getValue(ip + 1, program[ip].parameter1Mode())
-                val p2 = program.getValue(ip + 2, program[ip].parameter2Mode())
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
+                val p1 = program.getValue(ip + 1, program[ip].parameter1Mode(), base)
+                val p2 = program.getValue(ip + 2, program[ip].parameter2Mode(), base)
                 return if (p1 != 0) p2 - ip
                 else offset
             }
@@ -116,9 +117,9 @@ class IntCodeComputer(program: IntArray) {
         // it sets the instruction pointer to the value from the second parameter.
         // Otherwise, it does nothing.
         object JumpFalse : IntCodeComputer.Instruction(3) {
-            override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
-                val p1 = program.getValue(ip + 1, program[ip].parameter1Mode())
-                val p2 = program.getValue(ip + 2, program[ip].parameter2Mode())
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
+                val p1 = program.getValue(ip + 1, program[ip].parameter1Mode(), base)
+                val p2 = program.getValue(ip + 2, program[ip].parameter2Mode(), base)
                 return if (p1 == 0) p2 - ip
                 else offset
             }
@@ -128,9 +129,9 @@ class IntCodeComputer(program: IntArray) {
         // it stores 1 in the position given by the third parameter.
         // Otherwise, it stores 0.
         object LessThan : IntCodeComputer.Instruction(4) {
-            override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
-                val p1 = program.getValue(ip + 1, program[ip].parameter1Mode())
-                val p2 = program.getValue(ip + 2, program[ip].parameter2Mode())
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
+                val p1 = program.getValue(ip + 1, program[ip].parameter1Mode(), base)
+                val p2 = program.getValue(ip + 2, program[ip].parameter2Mode(), base)
                 program[program[ip + 3]] = if (p1 < p2) 1 else 0
                 return offset
             }
@@ -140,35 +141,45 @@ class IntCodeComputer(program: IntArray) {
         // it stores 1 in the position given by the third parameter.
         // Otherwise, it stores 0.
         object Equals : IntCodeComputer.Instruction(4) {
-            override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
-                val p1 = program.getValue(ip + 1, program[ip].parameter1Mode())
-                val p2 = program.getValue(ip + 2, program[ip].parameter2Mode())
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
+                val p1 = program.getValue(ip + 1, program[ip].parameter1Mode(), base)
+                val p2 = program.getValue(ip + 2, program[ip].parameter2Mode(), base)
                 program[program[ip + 3]] = if (p1 == p2) 1 else 0
+                return offset
+            }
+        }
+
+        object SetBase : IntCodeComputer.Instruction(2) {
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
+                //base += program.getValue(ip + 1, program[ip].parameter1Mode(), base)
                 return offset
             }
         }
 
         // Opcode 99 is halt: the program is finished and should immediately halt
         object Halt : Instruction(1) {
-            override fun execute(program: IntArray, ip: Int, io: InputOutput): Int {
+            override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
                 return 0
             }
         }
 
-        fun IntArray.getValue(at: Int, mode: ParameterMode) = when (mode) {
+        fun IntArray.getValue(at: Int, mode: ParameterMode, base: Int) = when (mode) {
             POSITION -> this[this[at]]
             IMMEDIATE -> this[at]
+            RELATIVE -> this[this[at] + base]
         }
     }
 
     enum class ParameterMode(val code: Int) {
         POSITION(0),
-        IMMEDIATE(1);
+        IMMEDIATE(1),
+        RELATIVE(2);
 
         companion object {
             fun fromInt(number: Int) = when (number) {
                 POSITION.code -> POSITION
                 IMMEDIATE.code -> IMMEDIATE
+                RELATIVE.code -> RELATIVE
                 else -> throw IllegalArgumentException("Unknown mode for parameter: $number")
             }
 
