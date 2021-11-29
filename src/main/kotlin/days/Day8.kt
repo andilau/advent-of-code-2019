@@ -15,11 +15,11 @@ class Day8(input: String) : Puzzle {
             ?: 0
 
     override fun partTwo() =
-        layers.first().indices
-            .map { at ->
-                layers
-                    .map { it[at] }
-                    .firstOrNull { it != TRANSPARENT }
+        layers
+            .map { layer ->
+                layers.first().indices
+                    .map { at -> layer[at] }
+                    .firstOrNull { pixel -> pixel != TRANSPARENT }
             }
             .chunked(WIDE)
             .forEach {
