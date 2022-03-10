@@ -13,6 +13,7 @@ Advent of Code is an Advent calendar of small programming puzzles by [Eric Wastl
 - Day 6: [Universal Orbit Map](https://adventofcode.com/2019/day/6), [Day6.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day6.kt)
 - Day 7: [Amplification Circuit](https://adventofcode.com/2019/day/7), [Day7.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day7.kt)
 - Day 8: [Space Image Format](https://adventofcode.com/2019/day/8), [Day8.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day8.kt)
+- Day 9: [Sensor Boost](https://adventofcode.com/2019/day/9), [Day9.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day9.kt)
 
 ### Features
 
