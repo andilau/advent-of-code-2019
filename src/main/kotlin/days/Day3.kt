@@ -1,7 +1,5 @@
 package days
 
-import kotlin.math.absoluteValue
-
 @AdventOfCodePuzzle(
     name = "Crossed Wires",
     url = "https://adventofcode.com/2019/day/3",
@@ -52,19 +50,6 @@ class Day3(lines: List<String>) : Puzzle {
             fun from(description: String): Wire {
                 return Wire(description.split(","))
             }
-        }
-    }
-
-    data class Point(val x: Int, val y: Int) {
-        fun up() = copy(y = y + 1)
-        fun down() = copy(y = y - 1)
-        fun left() = copy(x = x - 1)
-        fun right() = copy(x = x + 1)
-
-        fun manhattanDistance(to: Point = ORIGIN) = (x - to.x).absoluteValue + (y - to.y).absoluteValue
-
-        companion object {
-            val ORIGIN = Point(0, 0)
         }
     }
 }
