@@ -14,7 +14,8 @@ Advent of Code is an Advent calendar of small programming puzzles by [Eric Wastl
 - Day 7: [Amplification Circuit](https://adventofcode.com/2019/day/7), [Day7.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day7.kt), [IntCodeComputer.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/IntCodeComputer.kt)
 - Day 8: [Space Image Format](https://adventofcode.com/2019/day/8), [Day8.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day8.kt)
 - Day 9: [Sensor Boost](https://adventofcode.com/2019/day/9), [Day9.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day9.kt)
-- Day 10: [Monitoring Station](https://adventofcode.com/2019/day/10), [Day10.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day10.kt), [CompleteIntCodeComputer.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/CompleteIntCodeComputer.kt)
+- Day 10: [Monitoring Station](https://adventofcode.com/2019/day/10), [Day10.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day10.kt)
+- Day 11: [Space Police](https://adventofcode.com/2019/day/11), [Day11.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day11.kt)
 
 ### Features
 
