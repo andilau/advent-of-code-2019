@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 import util.InputReader
 
-
 @DisplayName("All Solutions")
 class SolutionsTest {
     @TestFactory()
@@ -25,6 +24,7 @@ class SolutionsTest {
         Day11(InputReader.getInputAsString(11)) to Pair(2373, Unit),
         Day12(InputReader.getInputAsList(12)) to Pair(14_907, 467_081_194_429_464),
         Day13(InputReader.getInputAsLongArray(13)) to Pair(372, 19_297),
+        Day14(InputReader.getInputAsList(14)) to Pair(532_506, 2_595_245),
     )
         .map { (day, answers) ->
             DynamicTest.dynamicTest("${day.javaClass.simpleName} -> ${answers.first} / ${answers.second}") {
