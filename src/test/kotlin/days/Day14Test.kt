@@ -12,9 +12,14 @@ class Day14Test {
     @DisplayName("Part 1")
     inner class Part1 {
         @Test
-        fun `Reactions require 165 ORE`() {
-            val partOne = Day14(EXAMPLE_REACTIONS_REQUIRE_165_ORE).partTwo()
+        fun `Example Reactions require 165 ORE for 1 fuel`() {
+            val partOne = Day14(EXAMPLE_REACTIONS_REQUIRE_165_ORE_FOR_1_FUEL).partTwo()
             assertThat(partOne).isEqualTo(165)
+        }
+        @Test
+        fun `Example Reactions require 2210736 ORE for 1 FUEL`() {
+            val partOne = Day14(EXAMPLE_REACTIONS_REQUIRE_2210736_ORE_FOR_1_FUEL).partTwo()
+            assertThat(partOne).isEqualTo(2210736)
         }
     }
 
@@ -35,7 +40,7 @@ class Day14Test {
     }
 
     companion object {
-        val EXAMPLE_REACTIONS_REQUIRE_165_ORE = """
+        val EXAMPLE_REACTIONS_REQUIRE_165_ORE_FOR_1_FUEL = """
             9 ORE => 2 A
             8 ORE => 3 B
             7 ORE => 5 C
@@ -72,7 +77,7 @@ class Day14Test {
             176 ORE => 6 VJHF"""
             .trimIndent().lines()
 
-        val EXAMPLE3 = """
+        val EXAMPLE_REACTIONS_REQUIRE_2210736_ORE_FOR_1_FUEL = """
             171 ORE => 8 CNZTR
             7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZWV, 1 RJRHP => 4 PLWSL
             114 ORE => 4 BHXH
