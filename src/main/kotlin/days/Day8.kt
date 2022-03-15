@@ -23,10 +23,11 @@ class Day8(input: String) : Puzzle {
             }
             .chunked(WIDE)
             .forEach {
-                println(it.joinToString(""))
+                println(it.joinToString("") { if (it == '1') "#" else " " })
             }
 
-     companion object {
+
+    companion object {
         var WIDE = 25
         var TALL = 6
         const val BLACK = '0'

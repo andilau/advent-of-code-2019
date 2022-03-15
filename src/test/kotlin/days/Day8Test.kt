@@ -5,8 +5,7 @@ import org.junit.jupiter.api.*
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
-
-@DisplayName("Day 7")
+@DisplayName("Day 8")
 class Day8Test {
     private val outContent = ByteArrayOutputStream()
     private val errContent = ByteArrayOutputStream()
@@ -62,9 +61,9 @@ class Day8Test {
         internal fun shouldPrintToStdout() {
             Day8("0222" + "1122" + "2212" + "0000").partTwo()
             assertThat(outContent.toString())
-                .isNotBlank()
-                .isEqualToIgnoringNewLines("0110")
-                .isEqualTo("01\n10\n")
+                .isNotBlank
+                .isEqualToIgnoringNewLines(" ## ")
+                .isEqualTo(" #\n# \n")
         }
     }
 
