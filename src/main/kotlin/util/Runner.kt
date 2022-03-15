@@ -51,6 +51,8 @@ object Runner {
                     constructorWithParameter.newInstance(InputReader.getInputAsListOfLong(dayNumber)) as Puzzle
                 "int[]" ->
                     constructorWithParameter.newInstance(InputReader.getInputAsIntArray(dayNumber)) as Puzzle
+                "long[]" ->
+                    constructorWithParameter.newInstance(InputReader.getInputAsLongArray(dayNumber)) as Puzzle
                 else ->
                     throw IllegalStateException("Unhandled Input: $requiredTypeName")
             }
