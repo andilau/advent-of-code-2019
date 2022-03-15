@@ -9,13 +9,16 @@ import kotlin.math.sign
 )
 class Day13(val program: LongArray) : Puzzle {
 
-    override fun partOne(): Int = outputAsSequence(program)
-        .windowed(3, 3)
-        .count { it.last() == BLOCK }
+    override fun partOne(): Int =
+        CompleteIntCodeComputer(program)
+            .run()
+            .outputAsSequence()
+            .windowed(3, 3)
+            .count { it.last() == BLOCK }
 
     override fun partTwo(): Int {
-        val map = program.clone().apply { this[0] = 2 }
-        val computer = CompleteIntCodeComputer(map)
+        val code = program.clone().apply { this[0] = 2 }
+        val computer = CompleteIntCodeComputer(code)
 
         var score = 0
         var paddle = 0
@@ -23,7 +26,7 @@ class Day13(val program: LongArray) : Puzzle {
             computer.run()
             try {
                 val x = computer.output.toInt()
-                computer.output.toInt()
+                computer.output.toInt()         // y is not relevant
                 val block = computer.output
 
                 when {
@@ -37,11 +40,10 @@ class Day13(val program: LongArray) : Puzzle {
         }
     }
 
-    private fun outputAsSequence(program: LongArray) = sequence {
-        val computerWithOutput = CompleteIntCodeComputer(program).run()
+    private fun CompleteIntCodeComputer.outputAsSequence() = sequence {
         while (true) {
             try {
-                yield(computerWithOutput.output)
+                yield(output)
             } catch (e: Exception) {
                 break
             }
