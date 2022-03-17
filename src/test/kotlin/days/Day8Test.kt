@@ -18,10 +18,6 @@ class Day8Test {
     @Nested
     @DisplayName("Part 1")
     inner class Part1 {
-        init {
-            Day8.TALL = 2
-            Day8.WIDE = 3
-        }
 
         @TestFactory
         internal fun examples(): List<DynamicTest> = listOf(
@@ -35,7 +31,10 @@ class Day8Test {
         )
             .map { (input, expected) ->
                 DynamicTest.dynamicTest("""Image "$input" should count $expected pixels""") {
-                    val actual = Day8(input).partOne()
+                    val actual = Day8(input)
+                        .apply { tall = 2 }
+                        .apply { wide = 3 }
+                        .partOne()
                     assertThat(actual).isEqualTo(expected)
                 }
             }
@@ -44,22 +43,24 @@ class Day8Test {
     @Nested
     @DisplayName("Part 2")
     inner class Part2 {
-        init {
-            Day8.TALL = 2
-            Day8.WIDE = 2
-        }
 
         @Test
         @DisplayName("Should Return Unit Type")
         internal fun shouldReturnUnit() {
-            val expected = Day8("0222112222120000").partTwo()
+            val expected = Day8("0222112222120000")
+                .apply { tall = 2 }
+                .apply { wide = 2 }
+                .partTwo()
             assertThat(expected).isInstanceOf(Unit.javaClass)
         }
 
         @Test
         @DisplayName("Should Print To Stdout")
         internal fun shouldPrintToStdout() {
-            Day8("0222" + "1122" + "2212" + "0000").partTwo()
+            Day8("0222" + "1122" + "2212" + "0000")
+                .apply { tall = 2 }
+                .apply { wide = 2 }
+                .partTwo()
             assertThat(outContent.toString())
                 .isNotBlank
                 .isEqualToIgnoringNewLines(" ## ")
