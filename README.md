@@ -18,6 +18,7 @@ Advent of Code is an Advent calendar of small programming puzzles by [Eric Wastl
 - Day 11: [Space Police](https://adventofcode.com/2019/day/11), [Day11.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day11.kt)
 - Day 12: [The N-Body Problem](https://adventofcode.com/2019/day/12), [Day12.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day12.kt)
 - Day 13: [Care Package](https://adventofcode.com/2019/day/13), [Day13.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day13.kt)
+- Day 14: [Space Stoichiometry](https://adventofcode.com/2019/day/14), [Day14.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day14.kt)
 
 ### Features
 

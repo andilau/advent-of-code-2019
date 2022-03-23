@@ -12,35 +12,70 @@ class Day14Test {
     @DisplayName("Part 1")
     inner class Part1 {
         @Test
-        fun `Example Reactions require 165 ORE for 1 fuel`() {
-            val partOne = Day14(EXAMPLE_REACTIONS_REQUIRE_165_ORE_FOR_1_FUEL).partTwo()
+        fun `Example 1 Reactions require 31 ORE for 1 FUEL`() {
+            val partOne = Day14(EXAMPLE1_REQUIRES_A_TOTAL_OF_31_ORE_FOR_1_FUEL).partOne()
+            assertThat(partOne).isEqualTo(31)
+        }
+
+        @Test
+        fun `Example 2 Reactions require 165 ORE for 1 FUEL`() {
+            val partOne = Day14(EXAMPLE2_REQUIRES_A_TOTAL_OF_165_ORE_FOR_1_FUEL).partOne()
             assertThat(partOne).isEqualTo(165)
         }
+
         @Test
-        fun `Example Reactions require 2210736 ORE for 1 FUEL`() {
-            val partOne = Day14(EXAMPLE_REACTIONS_REQUIRE_2210736_ORE_FOR_1_FUEL).partTwo()
-            assertThat(partOne).isEqualTo(2210736)
+        fun `Example 3 Reactions require 13312 ORE for 1 FUEL`() {
+            val ore = Day14(EXAMPLE3_REQUIRES_13312_ORE_FOR_1_FUEL).partOne()
+            assertThat(ore).isEqualTo(13312)
+        }
+
+        @Test
+        fun `Example 4 Reactions require 180697 ORE for 1 FUEL`() {
+            val ore = Day14(EXAMPLE4_REQUIRES_180697_ORE_FOR_1_FUEL).partOne()
+            assertThat(ore).isEqualTo(180697)
+        }
+
+        @Test
+        fun `Example 5 Reactions require 2210736 ORE for 1 FUEL`() {
+            val ore = Day14(EXAMPLE5_REQUIRES_2210736_ORE_FOR_1_FUEL).partOne()
+            assertThat(ore).isEqualTo(2210736)
         }
     }
 
     @Nested
     @DisplayName("Part 2")
     inner class Part2 {
+
         @Test
-        fun `EXAMPLE1 of initial positions takes 2772 steps before it repeats a previous state`() {
-            val partTwo = Day14(EXAMPLE1).partTwo()
-            assertThat(partTwo).isEqualTo(2772)
+        fun `The 13312 ORE-per-FUEL example could produce 82892753 FUEL`() {
+            val fuel = Day14(EXAMPLE3_REQUIRES_13312_ORE_FOR_1_FUEL).partTwo()
+            assertThat(fuel).isEqualTo(82892753)
         }
 
         @Test
-        fun `EXAMPLE2 of initial positions takes 4686774924 steps before it repeats a previous state`() {
-            val partTwo = Day14(EXAMPLE2).partTwo()
-            assertThat(partTwo).isEqualTo(4686774924)
+        fun `The 180697 ORE-per-FUEL example could produce 5586022 FUEL`() {
+            val fuel = Day14(EXAMPLE4_REQUIRES_180697_ORE_FOR_1_FUEL).partTwo()
+            assertThat(fuel).isEqualTo(5586022)
+        }
+
+        @Test
+        fun `The 2210736 ORE-per-FUEL example could produce 460664 FUEL`() {
+            val fuel = Day14(EXAMPLE5_REQUIRES_2210736_ORE_FOR_1_FUEL).partTwo()
+            assertThat(fuel).isEqualTo(460664)
         }
     }
 
     companion object {
-        val EXAMPLE_REACTIONS_REQUIRE_165_ORE_FOR_1_FUEL = """
+        val EXAMPLE1_REQUIRES_A_TOTAL_OF_31_ORE_FOR_1_FUEL = """
+            10 ORE => 10 A
+            1 ORE => 1 B
+            7 A, 1 B => 1 C
+            7 A, 1 C => 1 D
+            7 A, 1 D => 1 E
+            7 A, 1 E => 1 FUEL"""
+            .trimIndent().lines()
+
+        val EXAMPLE2_REQUIRES_A_TOTAL_OF_165_ORE_FOR_1_FUEL = """
             9 ORE => 2 A
             8 ORE => 3 B
             7 ORE => 5 C
@@ -50,7 +85,7 @@ class Day14Test {
             2 AB, 3 BC, 4 CA => 1 FUEL"""
             .trimIndent().lines()
 
-        val EXAMPLE1 = """
+        val EXAMPLE3_REQUIRES_13312_ORE_FOR_1_FUEL = """
             157 ORE => 5 NZVS
             165 ORE => 6 DCFZ
             44 XJWVT, 5 KHKGT, 1 QDVJ, 29 NZVS, 9 GPVTF, 48 HKGWZ => 1 FUEL
@@ -62,7 +97,7 @@ class Day14Test {
             3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT"""
             .trimIndent().lines()
 
-        val EXAMPLE2 = """
+        val EXAMPLE4_REQUIRES_180697_ORE_FOR_1_FUEL = """
             2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG
             17 NVRVD, 3 JNWZP => 8 VPVL
             53 STKFG, 6 MNCFX, 46 VJHF, 81 HVMC, 68 CXFTF, 25 GNMV => 1 FUEL
@@ -77,7 +112,7 @@ class Day14Test {
             176 ORE => 6 VJHF"""
             .trimIndent().lines()
 
-        val EXAMPLE_REACTIONS_REQUIRE_2210736_ORE_FOR_1_FUEL = """
+        val EXAMPLE5_REQUIRES_2210736_ORE_FOR_1_FUEL = """
             171 ORE => 8 CNZTR
             7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZWV, 1 RJRHP => 4 PLWSL
             114 ORE => 4 BHXH
