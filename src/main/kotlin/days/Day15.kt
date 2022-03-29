@@ -11,22 +11,22 @@ import java.util.*
 )
 class Day15(input: LongArray) : Puzzle {
     private val computer = CompleteIntCodeComputer(input)
-    val map = mutableMapOf(ORIGIN to SPACE).exploreMap()
+    private val map = mutableMapOf(ORIGIN to SPACE).exploreMap()
     private val locationOxygen = map.entries.first { it.value == OXYGEN }.key
 
     init {
-        map.asString(Block::symbol, SPACE).also { println(it) }
+        map.mapAsString(WALL, Block::symbol).also { println(it) }
     }
 
     override fun partOne(): Int = map
         .allowedLocations()
-        .findShortestPath(ORIGIN, locationOxygen)
-        .size - 1
+        .findPath(ORIGIN, locationOxygen)
+        .lastIndex
 
     override fun partTwo(): Int = map
         .allowedLocations()
-        .findLongestPath(locationOxygen)
-        .size - 1
+        .findPath(locationOxygen)
+        .lastIndex
 
     private fun Map<Point, Block>.allowedLocations() =
         mapValues {
@@ -36,28 +36,7 @@ class Day15(input: LongArray) : Puzzle {
             }
         }
 
-    private fun Map<Point, Boolean>.findShortestPath(from: Point, to: Point): List<Point> {
-        val queue = PriorityQueue<List<Point>>(Comparator.comparing { size })
-            .apply { add(listOf(from)) }
-        val visited = mutableSetOf<Point>()
-
-        while (queue.isNotEmpty()) {
-            val path = queue.poll()
-            if (path.last() == to) return path
-
-            if (path.last() in visited) continue
-            visited += path.last()
-
-            path.last()
-                .neighbors()
-                .filter { this.getOrDefault(it, false) }
-                .filter { it !in visited }
-                .forEach { queue += path + it }
-        }
-        error("No path found")
-    }
-
-    private fun Map<Point, Boolean>.findLongestPath(from: Point): List<Point> {
+    private fun Map<Point, Boolean>.findPath(from: Point, to: Point? = null): List<Point> {
         val queue = PriorityQueue<List<Point>>(Comparator.comparing { size })
             .apply { add(listOf(from)) }
         val visited = mutableSetOf<Point>()
@@ -65,6 +44,7 @@ class Day15(input: LongArray) : Puzzle {
 
         while (queue.isNotEmpty()) {
             val path = queue.poll()
+            if (path.last() == to) return path
 
             if (path.last() in visited) continue
             visited += path.last()
@@ -77,20 +57,11 @@ class Day15(input: LongArray) : Puzzle {
             if (next.isEmpty()) {
                 if (path.size > longestPath.size) longestPath = path
             }
+
             next.forEach { queue += path + it }
         }
-        return longestPath
-    }
 
-    private fun <T> Map<Point, T>.asString(mapping: (T) -> Char, default: T) = buildString {
-        val map = this@asString
-        for (y in keys.minOf(Point::y)..keys.maxOf(Point::y)) {
-            val line = (keys.minOf(Point::x)..keys.maxOf(Point::x))
-                .map { x -> map.getOrDefault(Point(x, y), default) }
-                .map { mapping(it) }
-                .joinToString("")
-            appendLine(line)
-        }
+        return longestPath.ifEmpty { error("No path found") }
     }
 
     private fun MutableMap<Point, Block>.exploreMap(here: Point = ORIGIN): MutableMap<Point, Block> {
@@ -121,7 +92,8 @@ class Day15(input: LongArray) : Puzzle {
         HERE(3, 'X');
 
         companion object {
-            fun from(id: Int) = values().firstOrNull { it.id == id }
+            fun from(id: Int) = values()
+                .firstOrNull { it.id == id }
                 ?: error("Invalid block id: $id")
         }
     }

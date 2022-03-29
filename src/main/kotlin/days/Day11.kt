@@ -22,7 +22,7 @@ class Day11(val input: String) : Puzzle {
     override fun partTwo(): Unit =
         Panels().apply { put(ORIGIN, WHITE) }
             .paintWith(CompleteIntCodeComputer(program))
-            .asString()
+            .mapAsString(BLACK) { if (it == BLACK) ' ' else '#' }
             .run { print(this) }
 
     class Panels : MutableMap<Point, PanelColor> by HashMap() {
@@ -38,16 +38,6 @@ class Day11(val input: String) : Puzzle {
                 this[position] = nextColor
             }
             return this
-        }
-
-        fun asString() = buildString {
-            val map = this@Panels
-            for (y in keys.maxOf(Point::y) downTo keys.minOf(Point::y)) {
-                val line = (keys.minOf(Point::x)..keys.maxOf(Point::x)).map { x ->
-                    map.getOrDefault(Point(x, y), BLACK)
-                }.map { if (it == BLACK) ' ' else '#' }.joinToString("")
-                appendLine(line)
-            }
         }
     }
 

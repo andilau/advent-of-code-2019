@@ -36,6 +36,20 @@ data class Point(val x: Int, val y: Int) {
     }
 }
 
+fun <T> Map<Point, T>.mapAsString(default: T, mapping: (T) -> Char) =
+    buildString {
+        val map = this@mapAsString
+        val yRange = keys.minOf(Point::y)..keys.maxOf(Point::y)
+        val xRange = (keys.minOf(Point::x)..keys.maxOf(Point::x))
+        for (y in yRange) {
+            val line = xRange
+                .map { x -> map.getOrDefault(Point(x, y), default) }
+                .map { mapping(it) }
+                .joinToString("")
+            appendLine(line)
+        }
+    }
+
 enum class Direction() {
     NORTH, EAST, SOUTH, WEST;
 
