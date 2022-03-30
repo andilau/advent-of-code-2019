@@ -6,6 +6,14 @@ import kotlin.math.sign
 fun String.toLongNumbers(): LongArray =
     split(",").map(String::toLong).toLongArray()
 
+fun lcm(x: Long, y: Long, vararg ints: Long): Long =
+    ints.fold(x * y / gcd(x, y)) { acc, z -> lcm(acc, z) }
+
+fun gcd(a: Long, b: Long): Long {
+    if (b == 0L) return a
+    return gcd(b, a % b)
+}
+
 fun <T> Collection<Iterable<T>>.flattenByIndex(): Sequence<T> = sequence {
     var index = 0
     while (true) {
@@ -19,8 +27,8 @@ fun <T> Collection<Iterable<T>>.flattenByIndex(): Sequence<T> = sequence {
 }
 
 data class Point(val x: Int, val y: Int) {
-    fun up() = copy(y = y + 1)
-    fun down() = copy(y = y - 1)
+    fun up() = copy(y = y - 1)
+    fun down() = copy(y = y + 1)
     fun left() = copy(x = x - 1)
     fun right() = copy(x = x + 1)
 
@@ -34,32 +42,6 @@ data class Point(val x: Int, val y: Int) {
     companion object {
         val ORIGIN = Point(0, 0)
     }
-}
-
-fun <T> Map<Point, T>.mapAsString(default: T, mapping: (T) -> Char) =
-    buildString {
-        val map = this@mapAsString
-        val yRange = keys.minOf(Point::y)..keys.maxOf(Point::y)
-        val xRange = (keys.minOf(Point::x)..keys.maxOf(Point::x))
-        for (y in yRange) {
-            val line = xRange
-                .map { x -> map.getOrDefault(Point(x, y), default) }
-                .map { mapping(it) }
-                .joinToString("")
-            appendLine(line)
-        }
-    }
-
-enum class Direction() {
-    NORTH, EAST, SOUTH, WEST;
-
-    fun left() = when (this) {
-        NORTH -> WEST
-        WEST -> SOUTH
-        SOUTH -> EAST
-        EAST -> NORTH
-    }
-    fun right() = left().left().left()
 }
 
 data class Point3D(val x: Int, val y: Int, val z: Int) {
@@ -79,10 +61,29 @@ data class Point3D(val x: Int, val y: Int, val z: Int) {
     }
 }
 
-fun lcm(x: Long, y: Long, vararg ints: Long): Long =
-    ints.fold(x * y / gcd(x, y)) { acc, z -> lcm(acc, z) }
+enum class Direction() {
+    NORTH, EAST, SOUTH, WEST;
 
-fun gcd(a: Long, b: Long): Long {
-    if (b == 0L) return a
-    return gcd(b, a % b)
+    fun left() = when (this) {
+        NORTH -> WEST
+        WEST -> SOUTH
+        SOUTH -> EAST
+        EAST -> NORTH
+    }
+
+    fun right() = left().left().left()
 }
+
+fun <T> Map<Point, T>.mapAsString(default: T, mapping: (T) -> Char) =
+    buildString {
+        val map = this@mapAsString
+        val yRange = keys.minOf(Point::y)..keys.maxOf(Point::y)
+        val xRange = (keys.minOf(Point::x)..keys.maxOf(Point::x))
+        for (y in yRange) {
+            val line = xRange
+                .map { x -> map.getOrDefault(Point(x, y), default) }
+                .map { mapping(it) }
+                .joinToString("")
+            appendLine(line)
+        }
+    }
