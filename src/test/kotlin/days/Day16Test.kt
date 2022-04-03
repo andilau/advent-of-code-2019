@@ -39,6 +39,17 @@ class Day16Test {
     @Nested
     @DisplayName("Part 2")
     inner class Part2 {
+        @TestFactory
+        fun `first eight digits of the final output list after 100 phases`(): List<DynamicTest> =
+            listOf(
+                "03036732577212944063491565474664" to "84462026",
+                "02935109699940807407585447034323" to "78725270",
+                "03081770884921959731165446850517" to "53553731",
+            ).map { (input, output) ->
+                DynamicTest.dynamicTest("$input -> $output") {
+                    assertThat(Day16(input).partTwo()).isEqualTo(output)
+                }
+            }
 
 
     }
