@@ -18,7 +18,7 @@ class Day16Test {
             listOf("12345678", "48226158", "34040438", "03415518", "01029498")
                 .mapIndexed { index, expected ->
                     DynamicTest.dynamicTest("$index -> $expected") {
-                        val actual = Day16("12345678").signalFor(index )
+                        val actual = Day16("12345678").processSignal(index )
                         assertThat(actual).isEqualTo(expected)
                     }
                 }
@@ -34,7 +34,6 @@ class Day16Test {
                     assertThat(Day16(input).partOne()).isEqualTo(output)
                 }
             }
-
     }
 
     @Nested
