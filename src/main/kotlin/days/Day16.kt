@@ -7,21 +7,24 @@ import kotlin.math.absoluteValue
     url = "https://adventofcode.com/2019/day/16",
     date = Date(day = 16, year = 2019)
 )
-class Day16(private val signalAsString: String) : Puzzle {
+class Day16(signalAsString: String) : Puzzle {
     private val signal = signalAsString.map { Character.digit(it, 10) }
+    private val cycles = (0..signal.size)
+        .map { index ->
+            CYCLE_PATTERN.cycle(signal.size, index + 1)
+        }
 
     override fun partOne(): String =
         signal
-            .processSignal(100)
+            .processSignal(100, cycles)
             .take(8)
             .joinToString("")
 
     override fun partTwo(): String {
         val offset = signal.take(7).joinToString("").toInt()
-        val signalRepeated = (1..10_000).flatMap { signal }.toMutableList()
+        val signalRepeated = (1..10_000).flatMap { signal }.toIntArray()
 
-        println("signalRepeated = ${signalRepeated.size}")
-        println("offset = $offset")
+        check(offset >= signalRepeated.size / 2) { "Offset must be between `N/2` and `N`" }
 
         repeat(100) {
             (signalRepeated.lastIndex downTo offset).forEach { index ->
@@ -29,37 +32,34 @@ class Day16(private val signalAsString: String) : Puzzle {
             }
         }
 
-
         return signalRepeated
-            .drop(offset )
-            .take(8).joinToString("")
+            .drop(offset)
+            .take(8)
+            .joinToString("")
     }
 
-    private fun List<Int>.processSignal(times: Int) =
-        (1..times).fold(this) { s, _ -> s.phase(BASE_PATTERN) }
+    private fun List<Int>.processSignal(times: Int, cycles: List<IntArray>) =
+        (1..times)
+            .fold(this.toIntArray()) { signal, _ -> signal.phase(cycles) }
 
     internal fun processSignal(repeat: Int) =
-        (1..repeat).fold(signal) { s, _ -> s.phase(BASE_PATTERN) }.joinToString("")
+        (1..repeat).fold(signal.toIntArray()) { s, _ -> s.phase(cycles) }.joinToString("")
 
     companion object {
-        val BASE_PATTERN = listOf(0, 1, 0, -1)
+        val CYCLE_PATTERN = intArrayOf(0, 1, 0, -1)
 
-        private fun List<Int>.phase(pattern: List<Int>): List<Int> =
-            List(this.size) { index ->
-                val cycle = pattern.cycle(size, index + 1)
-                this.mapIndexed { ix, element -> element * cycle[ix] }
+        private fun IntArray.phase(cycles: List<IntArray>): IntArray =
+            indices.map { index ->
+                val cycle = cycles[index]
+                mapIndexed { ix, number -> number * cycle[ix] }
                     .sum()
                     .let { (it % 10).absoluteValue }
-            }
+            }.toIntArray()
 
-        private val dp = mutableMapOf<Int, IntArray>()
-
-        private fun List<Int>.cycle(length: Int, cycleCount: Int): IntArray =
-            dp.computeIfAbsent(cycleCount) {
-                (0..length / cycleCount)
-                    .flatMap { nth -> List(cycleCount) { this[nth % size] } }
-                    .drop(1)
-                    .toIntArray()
-            }
+        private fun IntArray.cycle(length: Int, cycleCount: Int): IntArray =
+            (0..length / cycleCount)
+                .flatMap { nth -> List(cycleCount) { this[nth % size] } }
+                .drop(1)
+                .toIntArray()
     }
 }
