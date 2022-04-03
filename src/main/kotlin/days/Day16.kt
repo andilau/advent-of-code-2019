@@ -16,11 +16,23 @@ class Day16(private val signalAsString: String) : Puzzle {
             .take(8)
             .joinToString("")
 
-    override fun partTwo(): Int {
-        val offset = signalAsString.substring(0..8).toInt()
-        val inputRepeated = (offset until 10_000 * signal.size).map { signal[it % signal.size] }
+    override fun partTwo(): String {
+        val offset = signal.take(7).joinToString("").toInt()
+        val signalRepeated = (1..10_000).flatMap { signal }.toMutableList()
 
-        return 0
+        println("signalRepeated = ${signalRepeated.size}")
+        println("offset = $offset")
+
+        repeat(100) {
+            (signalRepeated.lastIndex downTo offset).forEach { index ->
+                signalRepeated[index - 1] = (signalRepeated[index - 1] + signalRepeated[index]) % 10
+            }
+        }
+
+
+        return signalRepeated
+            .drop(offset )
+            .take(8).joinToString("")
     }
 
     private fun List<Int>.processSignal(times: Int) =
