@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestFactory
-import util.InputReader.toIntArray
+import util.toIntArray
 
 @DisplayName("Day 7")
 class Day7Test {

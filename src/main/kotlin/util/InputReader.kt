@@ -16,11 +16,11 @@ object InputReader {
 
     fun getInputAsLongArray(day: Int): LongArray = getInputAsString(day).toLongArray()
 
-    fun String.toIntArray(): IntArray = split(",", "\n").map(String::toInt).toIntArray()
-
-    fun String.toLongArray(): LongArray = split(",", "\n").map(String::toLong).toLongArray()
-
     private fun fromResources(day: Int): URI =
         javaClass.classLoader.getResource("input_day_$day.txt")?.toURI()
             ?: throw IllegalArgumentException("input file for day $day not found")
 }
+
+fun String.toIntArray(): IntArray = split(",", "\n").map(String::toInt).toIntArray()
+
+fun String.toLongArray(): LongArray = split(",", "\n").map(String::toLong).toLongArray()

@@ -18,8 +18,8 @@ fun <T> Collection<Iterable<T>>.flattenByIndex(): Sequence<T> = sequence {
     var index = 0
     while (true) {
         var found = false
-        this@flattenByIndex.forEach {
-            it.elementAtOrNull(index)?.let { found = true; yield(it) }
+        this@flattenByIndex.forEach { iterable ->
+            iterable.elementAtOrNull(index)?.let { found = true; yield(it) }
         }
         if (!found) break
         index++
@@ -61,7 +61,7 @@ data class Point3D(val x: Int, val y: Int, val z: Int) {
     }
 }
 
-enum class Direction() {
+enum class Direction {
     NORTH, EAST, SOUTH, WEST;
 
     fun left() = when (this) {

@@ -24,8 +24,8 @@ class Day8(val input: String) : Puzzle {
                         .firstOrNull { pixel -> pixel != TRANSPARENT }
                 }
                 .chunked(wide)
-                .forEach {
-                    println(it.joinToString("") { if (it == '1') "#" else " " })
+                .forEach { row ->
+                    println(row.joinToString("") { if (it == '1') "#" else " " })
                 }
         }
 

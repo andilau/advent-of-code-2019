@@ -20,7 +20,7 @@ class Day10Test {
                 BASE_AT_6_3_DETECTS_41_ASTEROIDS to 41,
                 BASE_AT_11_13_DETECTS_210_ASTEROIDS to 210
             )
-                .mapIndexed() { i, (input, expected) ->
+                .mapIndexed { i, (input, expected) ->
                     DynamicTest.dynamicTest("Example $i should detect $expected asteroids") {
                         val actual = Day10(input.lines()).partOne()
                         assertThat(actual).isEqualTo(expected)

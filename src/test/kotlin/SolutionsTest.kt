@@ -7,7 +7,7 @@ import util.InputReader
 
 @DisplayName("All Solutions")
 class SolutionsTest {
-    @TestFactory()
+    @TestFactory
     fun testAdventOfCode() = listOf(
         Day1(InputReader.getInputAsListOfInt(1)) to Pair(3_380_731, 5_068_210),
         Day2(InputReader.getInputAsIntArray(2)) to Pair(6_627_023, 4019),

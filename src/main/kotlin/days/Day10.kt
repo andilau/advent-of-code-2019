@@ -41,7 +41,7 @@ class Day10(input: List<String>) : Puzzle {
         asteroids
             .filter { it != this }
             .groupBy { it.relativeTo(this).angle() }
-            .mapValues { it.value.sortedBy { it.relativeTo(this).distance() } }
+            .mapValues { (_, asteroids) -> asteroids.sortedBy { it.relativeTo(this).distance() } }
             .toSortedMap()
             .values
             .flattenByIndex()

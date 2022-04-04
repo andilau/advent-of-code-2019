@@ -25,7 +25,7 @@ class Day14Test {
 
         @Test
         fun `Example 3 Reactions require 13312 ORE for 1 FUEL`() {
-            val ore = Day14(`EXAMPLE_3_REQUIRES_13312_ORE_FOR_1_FUEL`).partOne()
+            val ore = Day14(EXAMPLE_3_REQUIRES_13312_ORE_FOR_1_FUEL).partOne()
             assertThat(ore).isEqualTo(13312)
         }
 

@@ -40,8 +40,8 @@ class Day4Test {
     @Nested
     @DisplayName("Part 2")
     inner class Part2 {
-        var ok = listOf("122345", "112233", "111122")
-        var nook = listOf("111111", "123444", "123789", "135679")
+        private var ok = listOf("122345", "112233", "111122")
+        private var nook = listOf("111111", "123444", "123789", "135679")
 
         @Test
         @DisplayName("Exactly Two Adjacent Digits")

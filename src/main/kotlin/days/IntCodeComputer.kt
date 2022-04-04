@@ -104,7 +104,7 @@ class IntCodeComputer(program: IntArray) {
         // Opcode 5 is jump-if-true: if the first parameter is non-zero,
         // it sets the instruction pointer to the value from the second parameter.
         // Otherwise, it does nothing.
-        object JumpTrue : IntCodeComputer.Instruction(3) {
+        object JumpTrue : Instruction(3) {
             override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
                 val p1 = program.getValue(ip + 1, program[ip].parameter1Mode(), base)
                 val p2 = program.getValue(ip + 2, program[ip].parameter2Mode(), base)
@@ -116,7 +116,7 @@ class IntCodeComputer(program: IntArray) {
         // Opcode 6 is jump-if-false: if the first parameter is zero,
         // it sets the instruction pointer to the value from the second parameter.
         // Otherwise, it does nothing.
-        object JumpFalse : IntCodeComputer.Instruction(3) {
+        object JumpFalse : Instruction(3) {
             override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
                 val p1 = program.getValue(ip + 1, program[ip].parameter1Mode(), base)
                 val p2 = program.getValue(ip + 2, program[ip].parameter2Mode(), base)
@@ -128,7 +128,7 @@ class IntCodeComputer(program: IntArray) {
         // Opcode 7 is less than: if the first parameter is less than the second parameter,
         // it stores 1 in the position given by the third parameter.
         // Otherwise, it stores 0.
-        object LessThan : IntCodeComputer.Instruction(4) {
+        object LessThan : Instruction(4) {
             override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
                 val p1 = program.getValue(ip + 1, program[ip].parameter1Mode(), base)
                 val p2 = program.getValue(ip + 2, program[ip].parameter2Mode(), base)
@@ -140,7 +140,7 @@ class IntCodeComputer(program: IntArray) {
         // Opcode 8 is equals: if the first parameter is equal to the second parameter,
         // it stores 1 in the position given by the third parameter.
         // Otherwise, it stores 0.
-        object Equals : IntCodeComputer.Instruction(4) {
+        object Equals : Instruction(4) {
             override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
                 val p1 = program.getValue(ip + 1, program[ip].parameter1Mode(), base)
                 val p2 = program.getValue(ip + 2, program[ip].parameter2Mode(), base)
@@ -149,7 +149,7 @@ class IntCodeComputer(program: IntArray) {
             }
         }
 
-        object SetBase : IntCodeComputer.Instruction(2) {
+        object SetBase : Instruction(2) {
             override fun execute(program: IntArray, ip: Int, base: Int, io: InputOutput): Int {
                 //base += program.getValue(ip + 1, program[ip].parameter1Mode(), base)
                 return offset

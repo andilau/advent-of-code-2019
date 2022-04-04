@@ -15,7 +15,8 @@ class Day15(input: LongArray) : Puzzle {
     private val locationOxygen = map.entries.first { it.value == OXYGEN }.key
 
     init {
-        map.mapAsString(WALL, Block::symbol).also { println(it) }
+        map.mapAsString(WALL, Block::symbol)
+            // .also { println(it) }
     }
 
     override fun partOne(): Int = map
