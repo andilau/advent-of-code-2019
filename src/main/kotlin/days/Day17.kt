@@ -1,5 +1,7 @@
 package days
 
+private const val ROBOT = "<>^v"
+
 @AdventOfCodePuzzle(
     name = "Set and Forget",
     url = "https://adventofcode.com/2019/day/17",
@@ -14,7 +16,7 @@ class Day17(val program: LongArray) : Puzzle {
         .lines()
         .flatMapIndexed { row, line ->
             line.mapIndexedNotNull { column, c ->
-                if (c == SCAFFOLD || c in "<>^v") Point(column, row) to c
+                if (c == SCAFFOLD || c in ROBOT) Point(column, row) to c
                 else null
             }
         }
@@ -31,7 +33,15 @@ class Day17(val program: LongArray) : Puzzle {
             .mapAsString('.') { it }
             .also { println(it) }
 
-/* Manual solution:
+        val from = scaffold.filterValues { it in ROBOT }.firstNotNullOfOrNull { it.key } ?: error("No start")
+        val to = scaffold.filterValues { it == SCAFFOLD }.keys.filter { it.neighbors().count { it in scaffold } == 1 }.first()
+
+        println("start = ${from}")
+        println("to = ${to}")
+        val path = scaffold.mapValues { true }.findPath(from, to)
+        println("mapValues = ${path}")
+
+        /*Manual solution:
         "R4,R10,R8,R4,"     -> A
         "R10,R6,R4,"        -> B
         "R4,R10,R8,R4,"     -> A

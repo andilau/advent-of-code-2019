@@ -1,5 +1,6 @@
 package days
 
+import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -87,3 +88,31 @@ fun <T> Map<Point, T>.mapAsString(default: T, mapping: (T) -> Char) =
             appendLine(line)
         }
     }
+
+fun Map<Point, Boolean>.findPath(from: Point, to: Point? = null): List<Point> {
+    val queue = PriorityQueue<List<Point>>(Comparator.comparing { size })
+        .apply { add(listOf(from)) }
+    val visited = mutableSetOf<Point>()
+    var longestPath = emptyList<Point>()
+
+    while (queue.isNotEmpty()) {
+        val path = queue.poll()
+        if (path.last() == to) return path
+
+        if (path.last() in visited) continue
+        visited += path.last()
+
+        val next = path.last()
+            .neighbors()
+            .filter { this.getOrDefault(it, false) }
+            .filter { it !in visited }
+
+        if (next.isEmpty()) {
+            if (path.size > longestPath.size) longestPath = path
+        }
+
+        next.forEach { queue += path + it }
+    }
+
+    return longestPath.ifEmpty { error("No path found") }
+}
