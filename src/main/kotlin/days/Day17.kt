@@ -1,13 +1,12 @@
 package days
 
-private const val SCAFFOLD: Char = '#'
-
 @AdventOfCodePuzzle(
     name = "Set and Forget",
     url = "https://adventofcode.com/2019/day/17",
     date = Date(day = 17, year = 2019)
 )
 class Day17(val program: LongArray) : Puzzle {
+
     private val computer = CompleteIntCodeComputer(program.clone())
     private val scaffold = computer.outputAsSequence()
         .map { it.toInt().toChar() }
@@ -31,6 +30,7 @@ class Day17(val program: LongArray) : Puzzle {
         scaffold
             .mapAsString('.') { it }
             .also { println(it) }
+
 /* Manual solution:
         "R4,R10,R8,R4,"     -> A
         "R10,R6,R4,"        -> B
@@ -50,16 +50,16 @@ class Day17(val program: LongArray) : Puzzle {
                     "R,4,L,12,R,6,L,12\n" +
                     "N\n"
 
-        check(program[0] == 1L)
         val computer = CompleteIntCodeComputer(program.clone().apply { this[0] = 2L })
+        computer.inputMultiple(input)
+        return computer.run().outputAsSequence().last().toInt()
+    }
 
-        input.map { it.code }
+    private fun CompleteIntCodeComputer.inputMultiple(string: String) {
+        string.map { it.code }
             .forEach {
-                computer.input = it.toLong()
+                this.input = it.toLong()
             }
-        computer.run()
-
-        return computer.outputAsSequence().last().toInt()
     }
 
     private fun CompleteIntCodeComputer.outputAsSequence() = sequence {
@@ -73,5 +73,9 @@ class Day17(val program: LongArray) : Puzzle {
             }
                 .also { this.yield(it) }
         }
+    }
+
+    companion object {
+        private const val SCAFFOLD: Char = '#'
     }
 }
