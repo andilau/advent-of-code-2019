@@ -7,9 +7,10 @@ private const val SCAFFOLD: Char = '#'
     url = "https://adventofcode.com/2019/day/17",
     date = Date(day = 17, year = 2019)
 )
-class Day17(input: LongArray) : Puzzle {
-    private val computer = CompleteIntCodeComputer(input)
-    private val scaffold = outputFromComputer(computer)
+class Day17(val program: LongArray) : Puzzle {
+    private val computer = CompleteIntCodeComputer(program.clone())
+    private val scaffold = computer.outputAsSequence()
+        .map { it.toInt().toChar() }
         .joinToString("")
         .lines()
         .flatMapIndexed { row, line ->
@@ -42,19 +43,35 @@ class Day17(input: LongArray) : Puzzle {
         "R10,R6,R4"         -> B
         "R4,L12,R6,L12"     -> C
 */
-        return 0
+        val input =
+            "A,B,A,B,C,B,C,A,B,C\n" +
+                    "R,4,R,10,R,8,R,4\n" +
+                    "R,10,R,6,R,4\n" +
+                    "R,4,L,12,R,6,L,12\n" +
+                    "N\n"
+
+        check(program[0] == 1L)
+        val computer = CompleteIntCodeComputer(program.clone().apply { this[0] = 2L })
+
+        input.map { it.code }
+            .forEach {
+                computer.input = it.toLong()
+            }
+        computer.run()
+
+        return computer.outputAsSequence().last().toInt()
     }
 
-    private fun outputFromComputer(computer: CompleteIntCodeComputer) = sequence {
-        while (!computer.halted) {
-            computer.run(true)
+    private fun CompleteIntCodeComputer.outputAsSequence() = sequence {
+        if (!halted) run()
 
-            val char = try {
-                computer.output.toInt().toChar()
+        while (true) {
+            try {
+                output
             } catch (e: Exception) {
-                // println(e)
+                break
             }
-            yield(char)
+                .also { this.yield(it) }
         }
     }
 }
