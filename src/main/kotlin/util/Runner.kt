@@ -65,7 +65,7 @@ object Runner {
                 }
             }
 
-        runBlocking(Dispatchers.IO) {
+        runBlocking(Dispatchers.Default) {
             val d1 = async { measureTimedValue { puzzle.partOne() } }
             val d2 = async { measureTimedValue { puzzle.partTwo() } }
             with(d1.await()) {
