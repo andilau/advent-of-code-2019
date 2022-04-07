@@ -21,6 +21,7 @@ Advent of Code is an Advent calendar of small programming puzzles by [Eric Wastl
 - Day 14: [Space Stoichiometry](https://adventofcode.com/2019/day/14), [Day14.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day14.kt)
 - Day 15: [Oxygen System](https://adventofcode.com/2019/day/15), [Day15.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day15.kt)
 - Day 16: [Flawed Frequency Transmission](https://adventofcode.com/2019/day/16), [Day16.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day16.kt)
+- Day 17: ["Set and Forget"](https://adventofcode.com/2019/day/17), [Day17.kt](https://github.com/andilau/advent-of-code-2019/blob/main/src/main/kotlin/days/Day17.kt)
 
 ### Features
 
