@@ -41,19 +41,12 @@ class Day17(val program: LongArray) : Puzzle {
 
         println("start = ${from}")
         println("to = ${to}")
-        val path = scaffold
+        scaffold
             .mapValues { true }
-            .findPathStreight(from, to)
+            .pathStrides(from, to)
+            .joinToString(",")
+            .also {println(it)}
 
-        path.joinToString() { p -> "(${p.x},${p.y})" }.also { println(it) }
-
-        fun Direction.from(sign: Char) = when (sign) {
-            '^' -> Direction.NORTH
-            'v' -> Direction.SOUTH
-            '<' -> Direction.WEST
-            '>' -> Direction.EAST
-            else -> throw IllegalArgumentException("Unknown direction: $sign")
-        }
         /*Manual solution:
         "R4,R10,R8,R4,"     -> A
         "R10,R6,R4,"        -> B
@@ -98,42 +91,58 @@ class Day17(val program: LongArray) : Puzzle {
         }
     }
 
-    data class Stride(val turn: Turn, val length: Int)
-    enum class Turn { LEFT, RIGHT }
-
-    private fun Map<Point, Boolean>.findPathStreight(from: Point, to: Point? = null): List<Point> {
-        val queue = PriorityQueue<List<Point>>(Comparator.comparing { size })
-            .apply { add(listOf(from)) }
-        val visited = mutableSetOf<Point>()
-        var longestPath = emptyList<Point>()
-
-        while (queue.isNotEmpty()) {
-            val path = queue.poll()
-            if (path.last() == to) return path
-
-            if (path.last() in visited) continue
-            visited += path.last()
-
-            val direction = path.takeLast(2).takeIf { list -> list.size == 2 }
-                ?.let { list-> list.last() -list.first() }
-
-            println("direction = ${direction}")
-            val next = path.last()
-                .neighbors()
-                .filter { this.getOrDefault(it, false) }
-                .filter { it !in visited }
-
-            if (next.isEmpty()) {
-                if (path.size > longestPath.size) longestPath = path
-            }
-
-            next.forEach { queue += path + it }
+    data class Stride(val turn: Turn, val length: Int) {
+        override fun toString(): String = "${turn.toString().first()}$length"
         }
 
-        return longestPath.ifEmpty { error("No path found") }
-    }
+        enum class Turn { LEFT, RIGHT }
 
-    companion object {
-        private const val SCAFFOLD: Char = '#'
+        private fun Map<Point, Boolean>.pathStrides(from: Point, to: Point? = null) = sequence<Stride> {
+            val queue = PriorityQueue<List<Point>>(Comparator.comparing { size })
+                .apply { add(listOf(from)) }
+
+            var stride: Stride? = null
+
+            while (queue.isNotEmpty()) {
+                val path = queue.poll()
+                if (path.last() == to) {
+                    stride?.let { yield(it) }
+                    break
+                }
+
+                val direction = path.takeLast(2).takeIf { list -> list.size == 2 }
+                    ?.let { list -> list.last() - list.first() }
+                    ?: Point.ORIGIN.up()
+
+                val nextStraight = path.last() + direction
+                if (nextStraight in this@pathStrides.keys) {
+                    queue += path + nextStraight
+                    stride = stride?.copy(length = stride.length + 1)
+                    continue
+                }
+
+                val nextLeft = path.last() + direction.rotateLeft()
+                if (nextLeft in this@pathStrides.keys) {
+                    queue += path + nextLeft
+                    stride?.let { yield(it) }
+                    stride = Stride(Turn.LEFT, 1)
+                    continue
+                }
+                val nextRight = path.last() + direction.rotateRight()
+                if (nextRight in this@pathStrides.keys) {
+                    queue += path + nextRight
+                    stride?.let { yield(it) }
+                    stride = Stride(Turn.RIGHT, 1)
+
+                    continue
+                }
+            }
+        }
+
+        fun Point.rotateLeft() = Point(y, -x)
+        fun Point.rotateRight() = Point(-y, x)
+
+        companion object {
+            private const val SCAFFOLD: Char = '#'
+        }
     }
-}
