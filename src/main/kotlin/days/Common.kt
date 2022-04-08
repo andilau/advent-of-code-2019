@@ -73,6 +73,17 @@ enum class Direction {
     }
 
     fun right() = left().left().left()
+
+    companion object {
+        fun from(movement: Point) =
+            when (movement) {
+                Point.ORIGIN.up() -> NORTH
+                Point.ORIGIN.down() -> SOUTH
+                Point.ORIGIN.left() -> WEST
+                Point.ORIGIN.right() -> EAST
+                else -> throw IllegalArgumentException("Unknown direction: $movement")
+            }
+    }
 }
 
 fun <T> Map<Point, T>.mapAsString(default: T, mapping: (T) -> Char) =

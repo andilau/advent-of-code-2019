@@ -1,5 +1,7 @@
 package days
 
+import java.util.*
+
 private const val ROBOT = "<>^v"
 
 @AdventOfCodePuzzle(
@@ -34,13 +36,24 @@ class Day17(val program: LongArray) : Puzzle {
             .also { println(it) }
 
         val from = scaffold.filterValues { it in ROBOT }.firstNotNullOfOrNull { it.key } ?: error("No start")
-        val to = scaffold.filterValues { it == SCAFFOLD }.keys.filter { it.neighbors().count { it in scaffold } == 1 }.first()
+        val to = scaffold.filterValues { it == SCAFFOLD }.keys.filter { it.neighbors().count { it in scaffold } == 1 }
+            .first()
 
         println("start = ${from}")
         println("to = ${to}")
-        val path = scaffold.mapValues { true }.findPath(from, to)
-        println("mapValues = ${path}")
+        val path = scaffold
+            .mapValues { true }
+            .findPathStreight(from, to)
 
+        path.joinToString() { p -> "(${p.x},${p.y})" }.also { println(it) }
+
+        fun Direction.from(sign: Char) = when (sign) {
+            '^' -> Direction.NORTH
+            'v' -> Direction.SOUTH
+            '<' -> Direction.WEST
+            '>' -> Direction.EAST
+            else -> throw IllegalArgumentException("Unknown direction: $sign")
+        }
         /*Manual solution:
         "R4,R10,R8,R4,"     -> A
         "R10,R6,R4,"        -> B
@@ -83,6 +96,41 @@ class Day17(val program: LongArray) : Puzzle {
             }
                 .also { this.yield(it) }
         }
+    }
+
+    data class Stride(val turn: Turn, val length: Int)
+    enum class Turn { LEFT, RIGHT }
+
+    private fun Map<Point, Boolean>.findPathStreight(from: Point, to: Point? = null): List<Point> {
+        val queue = PriorityQueue<List<Point>>(Comparator.comparing { size })
+            .apply { add(listOf(from)) }
+        val visited = mutableSetOf<Point>()
+        var longestPath = emptyList<Point>()
+
+        while (queue.isNotEmpty()) {
+            val path = queue.poll()
+            if (path.last() == to) return path
+
+            if (path.last() in visited) continue
+            visited += path.last()
+
+            val direction = path.takeLast(2).takeIf { list -> list.size == 2 }
+                ?.let { list-> list.last() -list.first() }
+
+            println("direction = ${direction}")
+            val next = path.last()
+                .neighbors()
+                .filter { this.getOrDefault(it, false) }
+                .filter { it !in visited }
+
+            if (next.isEmpty()) {
+                if (path.size > longestPath.size) longestPath = path
+            }
+
+            next.forEach { queue += path + it }
+        }
+
+        return longestPath.ifEmpty { error("No path found") }
     }
 
     companion object {
