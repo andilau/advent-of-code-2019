@@ -2,7 +2,6 @@ package days
 
 import days.Day15.Block.*
 import days.Point.Companion.ORIGIN
-import java.util.*
 
 @AdventOfCodePuzzle(
     name = "Oxygen System",
@@ -36,34 +35,6 @@ class Day15(input: LongArray) : Puzzle {
                 SPACE, OXYGEN, HERE -> true
             }
         }
-
-    private fun Map<Point, Boolean>.findPath(from: Point, to: Point? = null): List<Point> {
-        val queue = PriorityQueue<List<Point>>(Comparator.comparing { size })
-            .apply { add(listOf(from)) }
-        val visited = mutableSetOf<Point>()
-        var longestPath = emptyList<Point>()
-
-        while (queue.isNotEmpty()) {
-            val path = queue.poll()
-            if (path.last() == to) return path
-
-            if (path.last() in visited) continue
-            visited += path.last()
-
-            val next = path.last()
-                .neighbors()
-                .filter { this.getOrDefault(it, false) }
-                .filter { it !in visited }
-
-            if (next.isEmpty()) {
-                if (path.size > longestPath.size) longestPath = path
-            }
-
-            next.forEach { queue += path + it }
-        }
-
-        return longestPath.ifEmpty { error("No path found") }
-    }
 
     private fun MutableMap<Point, Block>.exploreMap(here: Point = ORIGIN): MutableMap<Point, Block> {
         here.neighbors()

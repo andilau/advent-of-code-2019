@@ -8,17 +8,11 @@ package days
 class Day17(val program: LongArray) : Puzzle {
 
     private val computer = CompleteIntCodeComputer(program.clone())
-    private val scaffold = computer.outputAsSequence()
-        .map { it.toInt().toChar() }
-        .joinToString("")
-        .lines()
-        .flatMapIndexed { row, line ->
-            line.mapIndexedNotNull { column, c ->
-                if (c == SCAFFOLD || c in "<>^v") Point(column, row) to c
-                else null
-            }
-        }
-        .toMap()
+    private val scaffold: Map<Point, Char> =
+        computer
+            .outputAsIntSequence()
+            .map(Int::toChar)
+            .buildScaffold() // .also { map -> println(map.mapAsString('.') { it }) }
 
     override fun partOne(): Int =
         scaffold
@@ -27,55 +21,78 @@ class Day17(val program: LongArray) : Puzzle {
             .sumOf { it.x * it.y }
 
     override fun partTwo(): Int {
-        scaffold
-            .mapAsString('.') { it }
-            .also { println(it) }
+        val from = scaffold
+            .filterValues { it in ROBOT }
+            .firstNotNullOfOrNull { it.key }
+            ?: error("No start found")
 
-/* Manual solution:
-        "R4,R10,R8,R4,"     -> A
-        "R10,R6,R4,"        -> B
-        "R4,R10,R8,R4,"     -> A
-        "R10,R6,R4,"        -> B
-        "R4,L12,R6,L12,"    -> C
-        "R10,R6,R4,"        -> B
-        "R4,L12,R6,L12,"    -> C
-        "R4,R10,R8,R4,"     -> A
-        "R10,R6,R4"         -> B
-        "R4,L12,R6,L12"     -> C
-*/
-        val input =
-            "A,B,A,B,C,B,C,A,B,C\n" +
-                    "R,4,R,10,R,8,R,4\n" +
-                    "R,10,R,6,R,4\n" +
-                    "R,4,L,12,R,6,L,12\n" +
-                    "N\n"
+        val strides = scaffold
+            .mapValues { true }
+            .findPathStrides(from, Point.ORIGIN.up())
+            .toList()
 
-        val computer = CompleteIntCodeComputer(program.clone().apply { this[0] = 2L })
-        computer.inputMultiple(input)
-        return computer.run().outputAsSequence().last().toInt()
-    }
+        val three = strides
+            .findThreeContainedListsOrNull()
+            ?: error("Cant find three contained lists")
 
-    private fun CompleteIntCodeComputer.inputMultiple(string: String) {
-        string.map { it.code }
-            .forEach {
-                this.input = it.toLong()
+        val compressedString = strides
+            .sequenceOfLists(three.toList())
+            .map(three.toList()::indexOf)
+            .map { it.toChar() + 'A'.code }
+            .joinToString(",")
+
+        val subListStrings = three.toList()
+            .map { list ->
+                list.joinToString(",") { (turn, length) ->
+                    "${turn.toString().take(1)},$length"
+                }
             }
+
+        val instructions = listOf(
+            compressedString,
+            subListStrings[0],
+            subListStrings[1],
+            subListStrings[2],
+            "N" // No playback
+        ).joinToString("\n", postfix = "\n")
+
+        return CompleteIntCodeComputer(program.clone().apply { this[0] = 2L })
+            .inputMultipleFrom(instructions)
+            .run()
+            .outputAsIntSequence().last()
     }
 
-    private fun CompleteIntCodeComputer.outputAsSequence() = sequence {
+    private fun Sequence<Char>.buildScaffold(): Map<Point, Char> =
+        joinToString("")
+            .lines()
+            .flatMapIndexed { row, line ->
+                line.mapIndexedNotNull { column, c ->
+                    if (c == SCAFFOLD || c in ROBOT) Point(column, row) to c
+                    else null
+                }
+            }
+            .toMap()
+
+    private fun CompleteIntCodeComputer.inputMultipleFrom(string: String) =
+        apply {
+            string
+                .map(Char::code)
+                .forEach { input = it.toLong() }
+        }
+
+    private fun CompleteIntCodeComputer.outputAsIntSequence() = sequence<Int> {
         if (!halted) run()
 
         while (true) {
-            try {
-                output
-            } catch (e: Exception) {
-                break
-            }
-                .also { this.yield(it) }
+            runCatching { output }
+                .getOrNull()
+                ?.let { yield(it.toInt()) }
+                ?: break
         }
     }
 
     companion object {
-        private const val SCAFFOLD: Char = '#'
+        private const val SCAFFOLD = '#'
+        private const val ROBOT = "<>^v"
     }
 }
