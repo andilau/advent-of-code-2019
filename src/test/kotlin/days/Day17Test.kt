@@ -12,7 +12,7 @@ class Day17Test {
     fun testAlternativeSolution() {
         val day17 = Day17(PROGRAM_ALT.toLongArray())
         assertThat(day17.partOne()).isEqualTo(11372)
-        assertThat(day17.partTwo()).isNotEqualTo(-1)
+        assertThat(day17.partTwo()).isEqualTo(1155497)
     }
 
     companion object {
