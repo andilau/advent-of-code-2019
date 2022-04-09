@@ -3,16 +3,24 @@ package days
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import util.InputReader
 import util.toLongArray
 
 @DisplayName("Day 17")
 class Day17Test {
 
     @Test
+    fun testSolution() {
+        val day17 = Day17(InputReader.getInputAsLongArray(17))
+        assertThat(day17.partOne()).isEqualTo(5788)
+        assertThat(day17.partTwo()).isEqualTo(648_545)
+    }
+
+    @Test
     fun testAlternativeSolution() {
         val day17 = Day17(PROGRAM_ALT.toLongArray())
         assertThat(day17.partOne()).isEqualTo(11372)
-        assertThat(day17.partTwo()).isEqualTo(1155497)
+        assertThat(day17.partTwo()).isEqualTo(1155_497)
     }
 
     companion object {

@@ -10,9 +10,9 @@ class Day17(val program: LongArray) : Puzzle {
     private val computer = CompleteIntCodeComputer(program.clone())
     private val scaffold: Map<Point, Char> =
         computer
-            .outputAsCharSequence()
-            .buildScaffold()
-            .also { map -> println(map.mapAsString('.') { it }) }
+            .outputAsIntSequence()
+            .map(Int::toChar)
+            .buildScaffold() // .also { map -> println(map.mapAsString('.') { it }) }
 
     override fun partOne(): Int =
         scaffold
@@ -59,10 +59,10 @@ class Day17(val program: LongArray) : Puzzle {
         return CompleteIntCodeComputer(program.clone().apply { this[0] = 2L })
             .inputMultipleFrom(instructions)
             .run()
-            .outputAsCharSequence().last().code
+            .outputAsIntSequence().last()
     }
 
-    private fun Sequence<Char>.buildScaffold() =
+    private fun Sequence<Char>.buildScaffold(): Map<Point, Char> =
         joinToString("")
             .lines()
             .flatMapIndexed { row, line ->
@@ -80,12 +80,13 @@ class Day17(val program: LongArray) : Puzzle {
                 .forEach { input = it.toLong() }
         }
 
-    private fun CompleteIntCodeComputer.outputAsCharSequence() = sequence {
+    private fun CompleteIntCodeComputer.outputAsIntSequence() = sequence<Int> {
         if (!halted) run()
+
         while (true) {
             runCatching { output }
                 .getOrNull()
-                ?.let { yield(it.toInt().toChar()) }
+                ?.let { yield(it.toInt()) }
                 ?: break
         }
     }

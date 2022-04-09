@@ -1,4 +1,23 @@
-import days.*
+
+import days.Day1
+import days.Day10
+import days.Day11
+import days.Day12
+import days.Day13
+import days.Day14
+import days.Day15
+import days.Day16
+import days.Day17
+import days.Day2
+import days.Day2Computer
+import days.Day3
+import days.Day4
+import days.Day4Faster
+import days.Day5
+import days.Day6
+import days.Day7
+import days.Day8
+import days.Day9
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.DynamicTest
@@ -27,7 +46,7 @@ class SolutionsTest {
         Day14(InputReader.getInputAsList(14)) to Pair(532_506L, 2_595_245L),
         Day15(InputReader.getInputAsLongArray(15)) to Pair(424, 446),
         Day16(InputReader.getInputAsString(16)) to Pair("70856418", "87766336"),
-        Day17(InputReader.getInputAsLongArray(17)) to Pair(5788, 648545),
+        Day17(InputReader.getInputAsLongArray(17)) to Pair(5788, 648_545),
     )
         .map { (day, answers) ->
             DynamicTest.dynamicTest("${day.javaClass.simpleName} -> ${answers.first} / ${answers.second}") {
