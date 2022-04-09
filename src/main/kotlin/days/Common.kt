@@ -1,6 +1,7 @@
 package days
 
 import java.util.*
+import java.util.Collections.indexOfSubList
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -128,4 +129,15 @@ fun Map<Point, Boolean>.findPath(from: Point, to: Point? = null): List<Point> {
     }
 
     return longestPath.ifEmpty { error("No path found") }
+}
+
+fun <T> List<T>.subtractAll(pattern: List<T>): List<T> {
+    val ret = this.toMutableList()
+    if (pattern.isEmpty()) return ret
+    while (true) {
+        val indexOfSubList = indexOfSubList(ret, pattern)
+        if (indexOfSubList == -1) break
+        repeat(pattern.size) { ret.removeAt(indexOfSubList) }
+    }
+    return ret
 }

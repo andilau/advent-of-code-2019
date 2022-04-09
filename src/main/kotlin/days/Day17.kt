@@ -2,8 +2,6 @@ package days
 
 import java.util.*
 
-private const val ROBOT = "<>^v"
-
 @AdventOfCodePuzzle(
     name = "Set and Forget",
     url = "https://adventofcode.com/2019/day/17",
@@ -36,47 +34,87 @@ class Day17(val program: LongArray) : Puzzle {
             .also { println(it) }
 
         val from = scaffold.filterValues { it in ROBOT }.firstNotNullOfOrNull { it.key } ?: error("No start")
-        val to = scaffold.filterValues { it == SCAFFOLD }.keys.filter { it.neighbors().count { it in scaffold } == 1 }
-            .first()
+        val to = scaffold.filterValues { it == SCAFFOLD }.keys.first { it.neighbors().count { it in scaffold } == 1 }
 
-        println("start = ${from}")
-        println("to = ${to}")
-        scaffold
+        println("start = $from")
+        println("to = $to")
+        val strides = scaffold
             .mapValues { true }
             .pathStrides(from, to)
+            .toList()
+        strides
             .joinToString(",")
-            .also {println(it)}
+            .also { println(it) }
 
-        /*Manual solution:
-        "R4,R10,R8,R4,"     -> A
-        "R10,R6,R4,"        -> B
-        "R4,R10,R8,R4,"     -> A
-        "R10,R6,R4,"        -> B
-        "R4,L12,R6,L12,"    -> C
-        "R10,R6,R4,"        -> B
-        "R4,L12,R6,L12,"    -> C
-        "R4,R10,R8,R4,"     -> A
-        "R10,R6,R4"         -> B
-        "R4,L12,R6,L12"     -> C
-*/
-        val input =
-            "A,B,A,B,C,B,C,A,B,C\n" +
-                    "R,4,R,10,R,8,R,4\n" +
-                    "R,10,R,6,R,4\n" +
-                    "R,4,L,12,R,6,L,12\n" +
-                    "N\n"
+        val three = strides.compressToThree() ?: error("Cant find three contained lists")
 
-        val computer = CompleteIntCodeComputer(program.clone().apply { this[0] = 2L })
-        computer.inputMultiple(input)
-        return computer.run().outputAsSequence().last().toInt()
-    }
-
-    private fun CompleteIntCodeComputer.inputMultiple(string: String) {
-        string.map { it.code }
-            .forEach {
-                this.input = it.toLong()
+        val compressed = strides
+            .getOrder(three.toList())
+            .translate(three.toList())
+            .map { it.toChar() + 65 }
+            .joinToString(",")
+            .also { println("$it") }
+        val map = three.toList()
+            .map { list ->
+                list.joinToString(",") { (turn, length) ->
+                    buildString {
+                        append(turn.toString().take(1))
+                        append(",")
+                        append(length)
+                    }
+                }
             }
+
+        val i = listOf(compressed) + map + "N"
+        println("i = $i")
+        val input = i.joinToString("\n", postfix = "\n")
+        return CompleteIntCodeComputer(program.clone().apply { this[0] = 2L })
+            .inputMultiple(input)
+            .run()
+            .outputAsSequence().last().toInt()
     }
+
+    private fun <T> List<T>.getOrder(lists: List<List<T>>) = sequence<List<T>> {
+        val sub = this@getOrder.toMutableList()
+        while (sub.isNotEmpty()) {
+            lists
+                .filter { Collections.indexOfSubList(sub, it) == 0 }
+                .forEach {
+                    repeat(it.size) { sub.removeAt(0) }
+                    yield(it)
+                }
+        }
+    }
+
+    private fun <T> Sequence<List<T>>.translate(lists: List<List<T>>) =
+        map { lists.indexOf(it) }
+
+    private fun <T> List<T>.compressToThree(): Triple<List<T>, List<T>, List<T>>? {
+        require(size >= 3) { "Cant compress list" }
+        if (size <= 3) return Triple(listOf(this[0]), listOf(this[1]), listOf(this[2]))
+
+        return (2..size / 3)
+            .flatMap { i -> (2..size / 3 - i).map { j -> Pair(i, j) } }
+            .mapNotNull { (i, j) ->
+                val first = take(j)
+                val second = drop(j).dropLast(i)
+                val third = takeLast(i)
+                val substituted = second.subtractAll(first).subtractAll(third)
+                (2..size / 2).asSequence()
+                    .filter { substituted.size % it == 0 }
+                    .firstOrNull { substituted.chunked(it).zipWithNext().all { it.first == it.second } }
+                    ?.let { Triple(first, substituted.take(it), third) }
+            }
+            .minByOrNull { it.toList().sumOf { it.size } }
+            ?.also { println("Found: $it") }
+    }
+
+    private fun CompleteIntCodeComputer.inputMultiple(string: String) =
+        apply {
+            string
+                .map(Char::code)
+                .forEach { input = it.toLong() }
+        }
 
     private fun CompleteIntCodeComputer.outputAsSequence() = sequence {
         if (!halted) run()
@@ -84,7 +122,7 @@ class Day17(val program: LongArray) : Puzzle {
         while (true) {
             try {
                 output
-            } catch (e: Exception) {
+            } catch (_: IllegalStateException) {
                 break
             }
                 .also { this.yield(it) }
@@ -92,57 +130,53 @@ class Day17(val program: LongArray) : Puzzle {
     }
 
     data class Stride(val turn: Turn, val length: Int) {
-        override fun toString(): String = "${turn.toString().first()}$length"
-        }
-
         enum class Turn { LEFT, RIGHT }
 
-        private fun Map<Point, Boolean>.pathStrides(from: Point, to: Point? = null) = sequence<Stride> {
-            val queue = PriorityQueue<List<Point>>(Comparator.comparing { size })
-                .apply { add(listOf(from)) }
+        override fun toString(): String = "${turn.toString().first()}$length"
+    }
 
-            var stride: Stride? = null
+    private fun Map<Point, Boolean>.pathStrides(from: Point, to: Point? = null) = sequence<Stride> {
+        val queue = PriorityQueue<List<Point>>(Comparator.comparing { size })
+            .apply { add(listOf(from)) }
 
-            while (queue.isNotEmpty()) {
-                val path = queue.poll()
-                if (path.last() == to) {
+        var stride: Stride? = null
+
+        while (queue.isNotEmpty()) {
+            val path = queue.poll()
+            if (path.last() == to) {
+                stride?.let { yield(it) }
+                break
+            }
+
+            val direction = path.takeLast(2).takeIf { list -> list.size == 2 }
+                ?.let { list -> list.last() - list.first() }
+                ?: Point.ORIGIN.up()
+
+            stride = when {
+                path.last() + direction in this@pathStrides.keys -> {
+                    queue += path + (path.last() + direction)
+                    stride?.copy(length = stride.length + 1)
+                }
+                path.last() + direction.rotateLeft() in this@pathStrides.keys -> {
+                    queue += path + (path.last() + direction.rotateLeft())
                     stride?.let { yield(it) }
-                    break
+                    Stride(Stride.Turn.LEFT, 1)
                 }
-
-                val direction = path.takeLast(2).takeIf { list -> list.size == 2 }
-                    ?.let { list -> list.last() - list.first() }
-                    ?: Point.ORIGIN.up()
-
-                val nextStraight = path.last() + direction
-                if (nextStraight in this@pathStrides.keys) {
-                    queue += path + nextStraight
-                    stride = stride?.copy(length = stride.length + 1)
-                    continue
-                }
-
-                val nextLeft = path.last() + direction.rotateLeft()
-                if (nextLeft in this@pathStrides.keys) {
-                    queue += path + nextLeft
+                path.last() + direction.rotateRight() in this@pathStrides.keys -> {
+                    queue += path + (path.last() + direction.rotateRight())
                     stride?.let { yield(it) }
-                    stride = Stride(Turn.LEFT, 1)
-                    continue
+                    Stride(Stride.Turn.RIGHT, 1)
                 }
-                val nextRight = path.last() + direction.rotateRight()
-                if (nextRight in this@pathStrides.keys) {
-                    queue += path + nextRight
-                    stride?.let { yield(it) }
-                    stride = Stride(Turn.RIGHT, 1)
-
-                    continue
-                }
+                else -> null
             }
         }
-
-        fun Point.rotateLeft() = Point(y, -x)
-        fun Point.rotateRight() = Point(-y, x)
-
-        companion object {
-            private const val SCAFFOLD: Char = '#'
-        }
     }
+
+    private fun Point.rotateLeft() = Point(y, -x)
+    private fun Point.rotateRight() = Point(-y, x)
+
+    companion object {
+        private const val SCAFFOLD = '#'
+        private const val ROBOT = "<>^v"
+    }
+}
