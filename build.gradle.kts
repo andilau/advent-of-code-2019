@@ -22,7 +22,7 @@ dependencies {
     implementation("org.reflections:reflections:0.10.2")
     implementation("org.slf4j:slf4j-nop:2.0.13")
 
-    testApi("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+    testApi("org.junit.jupiter:junit-jupiter-engine:5.11.3")
     testImplementation("org.assertj:assertj-core:3.26.3")
 }
 
