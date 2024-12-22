@@ -23,7 +23,7 @@ dependencies {
     implementation("org.slf4j:slf4j-nop:2.0.16")
 
     testApi("org.junit.jupiter:junit-jupiter-engine:5.11.3")
-    testImplementation("org.assertj:assertj-core:3.26.3")
+    testImplementation("org.assertj:assertj-core:3.27.0")
 }
 
 tasks {
