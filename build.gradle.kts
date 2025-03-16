@@ -1,8 +1,9 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     application
-    kotlin("jvm") version "2.1.10"
+    `kotlin-dsl`
+    kotlin("jvm") version "2.0.21"
 }
 
 application {
@@ -22,15 +23,22 @@ dependencies {
     implementation("org.reflections:reflections:0.10.2")
     implementation("org.slf4j:slf4j-nop:2.0.17")
 
-    testApi("org.junit.jupiter:junit-jupiter-engine:5.11.4")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("org.assertj:assertj-core:3.27.3")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+tasks.withType(KotlinCompilationTask::class).configureEach {
+    compilerOptions { // Deprecated non-lazy configuration options
+        freeCompilerArgs = listOf("--Xjsr305=strict")
+    }
 }
 
 tasks {
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
-        kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
-    }
     test {
         useJUnitPlatform()
     }
