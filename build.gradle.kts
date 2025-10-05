@@ -26,7 +26,7 @@ dependencies {
     implementation("org.slf4j:slf4j-nop:2.0.17")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:6.0.0")
     testImplementation("org.assertj:assertj-core:3.27.5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
