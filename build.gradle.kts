@@ -1,17 +1,12 @@
 plugins {
     application
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm") version "2.2.21"
 }
 
 application {
     mainClass.set("util.Runner")
 }
 
-kotlin {
-    jvmToolchain(17)
-}
-
-group = "de.herrlau"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -19,18 +14,32 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation(kotlin("stdlib-jdk8"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.reflections:reflections:0.10.2")
     implementation("org.slf4j:slf4j-nop:2.0.17")
 
-    testImplementation(kotlin("test"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.13.2")
-    testImplementation("org.assertj:assertj-core:3.27.5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testApi("org.junit.jupiter:junit-jupiter-engine:5.13.3")
+    testImplementation("org.assertj:assertj-core:3.27.6")
 }
 
-tasks.test {
-    useJUnitPlatform()
+kotlin {
+    jvmToolchain(17)
+    compilerOptions {
+        freeCompilerArgs.set(listOf("-Xjsr305=strict"))
+    }
+    sourceSets.all {
+        languageSettings {
+            languageVersion = "2.0"
+        }
+    }
+}
+
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnitJupiter()
+        }
+    }
 }
