@@ -21,7 +21,7 @@ dependencies {
     implementation("org.slf4j:slf4j-nop:2.0.17")
 
     testApi("org.junit.jupiter:junit-jupiter-engine:5.13.3")
-    testImplementation("org.assertj:assertj-core:3.27.6")
+    testImplementation("org.assertj:assertj-core:3.27.7")
 }
 
 kotlin {
