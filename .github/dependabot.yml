@@ -11,6 +11,9 @@ updates:
     schedule:
       interval: "weekly"
       day: "sunday"
+    groups:
+      all-actions:
+        pattern: "+"
   # Maintain dependencies for Gradle
   - package-ecosystem: "gradle" # See documentation for possible values
     directory: "/"
