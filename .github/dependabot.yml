@@ -13,7 +13,7 @@ updates:
       day: "sunday"
     groups:
       all-actions:
-        pattern: "+"
+        pattern: ["*"]
   # Maintain dependencies for Gradle
   - package-ecosystem: "gradle" # See documentation for possible values
     directory: "/"
